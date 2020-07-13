@@ -1,29 +1,17 @@
 // -*- coding:utf-8-unix -*-
 
-// DOES NOT WORK
-
 use proconio::input;
 
-fn popcount(n: u64) -> u64 {
-    let mut num_of_one = 0;
-    for i in 0..n {
-        let shifted = n >> i;
-        if shifted == 0 {
-            break;
-        }
-
-        if shifted & 1 == 1 {
-            num_of_one += 1;
-        }
-    }
-    num_of_one
+fn pcnt(x: u32) -> u32 {
+    x.count_ones()
 }
 
-#[test]
-fn test_popcount() {
-    assert_eq!(popcount(3), 2);
-    assert_eq!(popcount(7), 3);
-    assert_eq!(popcount(0), 0);
+fn f(x: u32) -> u32 {
+    if x == 0 {
+        0
+    } else {
+        f(x % pcnt(x)) + 1
+    }
 }
 
 fn main() {
@@ -32,52 +20,46 @@ fn main() {
         s: String,
     }
 
-    let x: Vec<char> = s.chars().collect();
-    let mut ans = Vec::with_capacity((n + 1) as usize);
-    for _i in 0..n + 1 {
-        ans.push(-1);
+    let x: Vec<u8> = s.chars().map(|c| if c == '0' { 0 } else { 1 }).collect();
+    let pc: u32 = x.iter().filter(|&i| *i == 1).count() as u32;
+    let mut ans = Vec::with_capacity(n as usize);
+    for _i in 0..n {
+        ans.push(0);
     }
 
-    for i in 1..n + 1 {
-        if ans[i as usize] >= 0 {
-            continue;
-        }
-
-        let mut x_now = x.clone();
-        if x_now[(i - 1) as usize] == '0' {
-            x_now[(i - 1) as usize] = '1';
+    for b in 0..2 {
+        let mut npc = pc;
+        if b == 0 {
+            npc += 1;
         } else {
-            x_now[(i - 1) as usize] = '0';
-        }
-        if x_now.iter().all(|c| *c == '0') {
-            ans[i as usize] = 0;
-            continue;
-        }
-
-        let mut calc_num = 0;
-        // while !x_now.iter().all(|c| *c == '0') {
-        loop {
-            let x_num = u64::from_str_radix(&x_now.iter().collect::<String>(), 2).unwrap();
-            let x_num_after = x_num % popcount(x_num);
-            calc_num += 1;
-            // if ans[x_num_after as usize] >= 0 {
-            //     ans[i as usize] = calc_num + ans[x_num_after as usize];
-            //     break;
-            // } else if x_num_after == 0 {
-            //     ans[i as usize] = calc_num;
-            //     break;
-            // }
-            if x_num_after == 0 {
-                ans[i as usize] = calc_num;
-                break;
+            if npc < 2 {
+                continue;
             }
 
-            let s_tmp = format!("{:b}", x_num_after);
-            x_now = s_tmp.chars().collect();
+            npc -= 1;
+        }
+        let mut r0 = 0;
+        for i in 0..n {
+            r0 = (r0 * 2) % npc;
+            r0 += x[i as usize] as u32;
+        }
+        let mut k = 1;
+        for i in (0..n).rev() {
+            // `ii` 桁目を見ている際には `2^ii` が求まっている
+            if x[i as usize] == b as u8 {
+                let mut r = r0;
+                if b == 0 {
+                    r = (r + k) % npc;
+                } else {
+                    r = (npc + r - k) % npc;
+                }
+                ans[i as usize] = f(r) + 1;
+            }
+            k = (k * 2) % npc;
         }
     }
 
-    for i in 1..n + 1 {
+    for i in 0..n {
         println!("{}", ans[i as usize]);
     }
 }
