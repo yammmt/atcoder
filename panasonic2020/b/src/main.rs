@@ -13,6 +13,7 @@ fn main() {
         return;
     }
 
-    let ans = (h as f64 / 2.0).ceil() * (w as f64 / 2.0).ceil() + (h as f64 / 2.0).floor() * (w as f64 / 2.0).floor();
+    let n = h * w;
+    let ans = (n + 1) / 2;
     println!("{}", ans as u64);
 }
