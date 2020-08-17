@@ -24,6 +24,6 @@ fn main() {
     if k % 2 == 0 {
         println!("{}", x.abs());
     } else {
-        println!("{}", (x - d).abs().min((x + d).abs()));
+        println!("{}", (x - d).abs());
     }
 }
