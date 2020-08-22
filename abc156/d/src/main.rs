@@ -2,7 +2,7 @@
 
 use proconio::input;
 
-// n^p mod m
+// n^p mod m (繰り返し二乗法)
 fn repeat_square(n: u64, p: u64, m: u64) -> u64 {
     if p == 0 {
         1
@@ -15,6 +15,17 @@ fn repeat_square(n: u64, p: u64, m: u64) -> u64 {
     }
 }
 
+// m が素数であること, [0, r] がすべて m の倍数でないこと (r < m)
+fn ncr_mod(n: u64, r: u64, m: u64) -> u64 {
+    let mut denominator = n;
+    let mut numerator = 1;
+    for i in 1..r {
+        denominator = (denominator * (n - i)) % m;
+        numerator = (numerator * (i + 1)) % m;
+    }
+    (denominator * repeat_square(numerator, m - 2, m)) % m
+}
+
 fn main() {
     input! {
         n: u64,
@@ -25,19 +36,8 @@ fn main() {
     let divisor = 10_u64.pow(9) + 7;
     let mut ans: u64 = repeat_square(2, n, divisor) - 1;
 
-    let mut current_ncr = 1;
-    for i in 1..a + 1 {
-        current_ncr = (current_ncr * (n - i + 1)) % divisor;
-        current_ncr = (current_ncr / i) % divisor;
-    }
-    ans -= current_ncr;
-
-    let mut current_ncr = 1;
-    for i in 1..b + 1 {
-        current_ncr = (current_ncr * (n - i + 1)) % divisor;
-        current_ncr = (current_ncr / i) % divisor;
-    }
-    ans -= current_ncr;
+    ans = (ans + divisor - ncr_mod(n, a, divisor)) % divisor;
+    ans = (ans + divisor - ncr_mod(n, b, divisor)) % divisor;
 
     println!("{}", ans);
 }
