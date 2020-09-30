@@ -28,6 +28,7 @@ fn main() {
         // println!("{:?}", vcount);
 
         if vcount[0] > 1 {
+            // 時刻 0 で複数の風船は割れない
             ng = mid;
             continue;
         }
