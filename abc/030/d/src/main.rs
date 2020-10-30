@@ -1,5 +1,7 @@
 // -*- coding:utf-8-unix -*-
 
+// https://imulan.hatenablog.jp/entry/2015/10/25/012906
+
 // 別解: https://atcoder.jp/contests/abc030/submissions/17719897
 // i 回目の位置が bn[i] ではないことに気付かないとサンプルだけ通ってテストケース全滅した
 
