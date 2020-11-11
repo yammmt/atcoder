@@ -1,0 +1,13 @@
+[package]
+name = "jsc2019-qual"
+version = "0.1.0"
+authors = ["yammmt <cu.cs.y20@gmail.com>"]
+edition = "2018"
+
+# dependencies added to new project
+[dependencies]
+proconio = { version = "=0.3.6", features = ["derive"] }
+
+[profile.release]
+lto = true
+panic = 'abort'
