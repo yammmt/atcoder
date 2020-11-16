@@ -9,98 +9,41 @@ fn main() {
     }
     let d = 10u64.pow(9) + 7;
 
-    let mut lamph = vec![vec![0; w]; h];
-    let mut lampw = vec![vec![0; w]; h];
-    let mut lamphw = vec![vec![0; w]; h];
-    for i in 0..h {
-        let mut cur = 0;
-        for j in 0..w {
-            if s[i][j] == '.' {
-                lampw[i][j] = cur;
-                cur += 1;
-            } else {
-                cur = 0;
-            }
-        }
-    }
-    for j in 0..w {
-        let mut cur = 0;
-        for i in 0..h {
-            if s[i][j] == '.' {
-                lamph[i][j] = cur;
-                cur += 1;
-            } else {
-                cur = 0;
-            }
-        }
-    }
-    for i in 0..h {
-        if i == 0 {
-            for j in 0..w {
-                // println!("start from ({}, {})", i, j);
-                let mut added = 0;
-                let mut cur = 0;
-                while i + added < h && j + added < w {
-                    // println!("({}, {})", i + added, j + added);
-                    if s[i + added][j + added] == '.' {
-                        lamphw[i + added][j + added] = cur;
-                        cur += 1;
-                    } else {
-                        cur = 0;
-                    }
-                    added += 1;
-                }
-            }
-        } else {
-            // w == 1 のみ見れば良い
-            let j = 0;
-            let mut added = 0;
-            let mut cur = 0;
-            while i + added < h && j + added < w {
-                if s[i + added][j + added] == '.' {
-                    lamphw[i + added][j + added] = cur;
-                    cur += 1;
-                } else {
-                    cur = 0;
-                }
-                added += 1;
-            }
-        }
-    }
-    // println!("h: {:?}", lamph);
-    // println!("w: {:?}", lampw);
-    // println!("hw: {:?}", lamphw);
-    let mut lampall = vec![vec![0; w]; h];
-    for i in 0..h {
-        for j in 0..w {
-            lampall[i][j] = lamph[i][j] + lampw[i][j] + lamphw[i][j];
-        }
-    }
-    lampall[0][0] = 1;
-    println!("{:?}", lampall);
-
-    // 累積和もっておかないと計算バグるのでは
+    // 累積和を事前に計算するとどうしても合わないのなぜかわからない
     let mut dp = vec![vec![0; w]; h];
+    let mut dph = vec![vec![0; w]; h];
+    let mut dpw = vec![vec![0; w]; h];
+    let mut dphw = vec![vec![0; w]; h];
     dp[0][0] = 1;
+    dph[0][0] = 1;
+    dpw[0][0] = 1;
+    dphw[0][0] = 1;
+    // 貰う DP
     for i in 0..h {
         for j in 0..w {
-            println!("{}, {}", i, j);
-            if i + 1 < h && s[i + 1][j] == '.' {
-                println!("i + 1");
-                dp[i + 1][j] = (dp[i + 1][j] + lampall[i][j]) % d;
+            // println!("{}, {}", i, j);
+            if s[i][j] == '#' || (i == 0 && j == 0) {
+                continue;
             }
-            if j + 1 < w && s[i][j + 1] == '.' {
-                dp[i][j + 1] = (dp[i][j + 1] + lampall[i][j]) % d;
-                println!("j + 1");
+
+            if i > 0 {
+                dph[i][j] = (dph[i][j] + dph[i - 1][j]) % d;
             }
-            if i + 1 < h && j + 1 < w && s[i + 1][j + 1] == '.' {
-                dp[i + 1][j + 1] = (dp[i + 1][j + 1] + lampall[i][j]) % d;
-                println!("ij + 1");
+            if j > 0 {
+                dpw[i][j] = (dpw[i][j] + dpw[i][j - 1]) % d;
             }
-            println!("{:?}", dp);
+            if i > 0 && j > 0 {
+                dphw[i][j] = (dphw[i][j] + dphw[i - 1][j - 1]) % d;
+            }
+
+            dp[i][j] = (dph[i][j] + dpw[i][j] + dphw[i][j]) % d;
+
+            dph[i][j] = (dph[i][j] + dp[i][j]) % d;
+            dpw[i][j] = (dpw[i][j] + dp[i][j]) % d;
+            dphw[i][j] = (dphw[i][j] + dp[i][j]) % d;
+            // println!("{:?}", dp);
         }
     }
-    println!("{:?}", dp);
 
     println!("{}", dp[h - 1][w - 1]);
 }
