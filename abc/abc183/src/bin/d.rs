@@ -22,8 +22,8 @@ fn main() {
     // println!("{:?}", imos);
 
     let mut curout = 0;
-    for i in 0..imos.len() {
-        curout += imos[i];
+    for i in &imos {
+        curout += *i;
         // println!("{}", curout);
         if curout > w {
             println!("No");
