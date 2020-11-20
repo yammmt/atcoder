@@ -11,9 +11,11 @@ fn main() {
 
     let mut dp = vec![std::u64::MAX; h + 1];
     dp[0] = 0;
+    // 配る DP (ダメージを与えるのに必要な魔力)
     for iab in &ab {
-        // let mut dp_base_idx = 0;
+        // j: ダメージ
         for j in 1..h + 1 {
+            // 出発点
             let dp_base_idx = if j < iab.0 as usize {
                 0
             } else {
@@ -21,11 +23,7 @@ fn main() {
             };
 
             // println!("dbi: {}", dp_base_idx);
-            // println!("{:?}", dp);
             dp[j] = dp[j].min(dp[dp_base_idx] + iab.1);
-            // if j as u64 % iab.0 == 0 {
-            //     dp_base_idx += iab.0 as usize;
-            // }
         }
     }
     // println!("{:?}", dp);
