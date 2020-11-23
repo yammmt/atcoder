@@ -1,85 +1,45 @@
 use proconio::input;
-// use std::collections::VecDeque;
 
-// 硬貨を袋に戻すのに取り出す確率変わらないの？
+// https://atcoder.jp/contests/abc184/submissions/18349765 (tkobayashi0111)
+// 想定解は dp[100][100][100] = 0.0 から順に dp[a][b][c] を埋めていく遷移
+
+// ~~硬貨を袋に戻すのに取り出す確率変わらないの？~~
+// サンプル 2 は初手で 98 の方取り出せば次はどれ引いても終了するのでああいう式になる
+// 袋に戻すと確率が変わるため一度に確率を計算する手法では WA
 
 fn main() {
     input! {
-        a: u32,
-        b: u32,
-        c: u32,
+        a: usize,
+        b: usize,
+        c: usize,
     }
 
-    let a_per = (a as f64) / ((a + b + c) as f64);
-    let b_per = (b as f64) / ((a + b + c) as f64);
-    let c_per = (c as f64) / ((a + b + c) as f64);
-
+    // dp: その硬貨状態に繊維する確率 (**期待値ではない**)
+    let mut dp = vec![vec![vec![0.0; 101]; 101]; 101];
+    dp[a][b][c] = 1.0;
     let mut ans = 0.0;
     for i in a..101 {
-        let a_diff = i - a;
         for j in b..101 {
-            let b_diff = j - b;
             for k in c..101 {
-                if (i != 100 && j != 100 && k != 100) || (i == 100 && j == 100) || (i == 100 && k == 100) || (j == 100 && k == 100) {
+                // println!("({:3}, {:3}, {:3}) に到達する確率: {}", i, j, k, dp[i][j][k]);
+                if (i == 100 && j != 100 && k != 100) || (i != 100 && j == 100 && k != 100) || (i != 100 && j != 100 && k == 100) {
+                    // println!("+= {}", (i + j + k - a - b - c) as f64 * dp[i][j][k]);
+                    ans += (i + j + k - a - b - c) as f64 * dp[i][j][k];
                     continue;
                 }
 
-                let c_diff = k - c;
-                // println!("{} {} {}", i, j, k);
-                let mut cur_per = 1.0;
-                if a_diff > 0 {
-                    cur_per *= (a_diff as f64) * a_per;
+                if i != 100 {
+                    dp[i + 1][j][k] += dp[i][j][k] * i as f64 / (i + j + k) as f64;
                 }
-                if b_diff > 0 {
-                    cur_per *= (b_diff as f64) * b_per;
+                if j != 100 {
+                    dp[i][j + 1][k] += dp[i][j][k] * j as f64 / (i + j + k) as f64;
                 }
-                if c_diff > 0 {
-                    cur_per *= (c_diff as f64) * c_per;
+                if k != 100 {
+                    dp[i][j][k + 1] += dp[i][j][k] * k as f64 / (i + j + k) as f64;
                 }
-                // println!("cur_per: {}", cur_per);
-
-                ans += ((a_diff + b_diff + c_diff) as f64) * cur_per;
             }
         }
     }
 
-    // let mut vdq = VecDeque::new();
-    // vdq.push_back((1, 1.0, (a, b, c)));
-    // let mut ans = 0.0;
-    // // TLE
-    // // let mut ith = 1;
-    // while !vdq.is_empty() {
-    //     let cur = vdq.pop_front().unwrap();
-    //     // println!("{}: {:?}", ith, cur);
-    //     // ith += 1;
-
-    //     // a を引く
-    //     if a != 0 {
-    //         let p = cur.1 * (cur.2.0 as f64 / ((cur.2.0+cur.2.1+cur.2.2) as f64));
-    //         if cur.2.0 == 99 {
-    //             ans += cur.0 as f64 * p;
-    //         } else {
-    //             vdq.push_back((cur.0 + 1, p, (cur.2.0 + 1, cur.2.1, cur.2.2)));
-    //         }
-    //     }
-    //     // b を引く
-    //     if b != 0 {
-    //         let p = cur.1 * (cur.2.1 as f64 / ((cur.2.0+cur.2.1+cur.2.2) as f64));
-    //         if cur.2.1 == 99 {
-    //             ans += cur.0 as f64 * p;
-    //         } else {
-    //             vdq.push_back((cur.0 + 1, p, (cur.2.0, cur.2.1 + 1, cur.2.2)));
-    //         }
-    //     }
-    //     // c を引く
-    //     if c != 0 {
-    //         let p = cur.1 * (cur.2.2 as f64 / ((cur.2.0+cur.2.1+cur.2.2) as f64));
-    //         if cur.2.2 == 99 {
-    //             ans += cur.0 as f64 * p;
-    //         } else {
-    //             vdq.push_back((cur.0 + 1, p, (cur.2.0, cur.2.1, cur.2.2 + 1)));
-    //         }
-    //     }
-    // }
     println!("{}", ans);
 }

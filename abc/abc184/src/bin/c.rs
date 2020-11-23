@@ -1,3 +1,6 @@
+// 本番中の AC は嘘解で after_contest が追加された
+// 嘘解法では例えば入力 1 1 1 6 で 3 になってしまう (マンハッタン距離 5 であり移動二度で辿り着ける)
+
 use proconio::input;
 
 fn main() {
@@ -16,24 +19,10 @@ fn main() {
         let mandiff = xdiff + ydiff;
         // println!("{}", xdiff);
         // println!("{}", ydiff);
-        if xdiff < ydiff {
-            if ydiff - xdiff <= 3 || mandiff % 2 == 0 {
-                println!("2");
-            } else {
-                println!("3");
-            }
+        if xdiff + ydiff <= 6 || (xdiff - ydiff).abs() <= 3 || mandiff % 2 == 0 {
+            println!("2");
         } else {
-            if xdiff - ydiff <= 3 || mandiff % 2 == 0 {
-                println!("2");
-            } else {
-                println!("3");
-            }
+            println!("3");
         }
-
-        // if mandiff % 2 == 0 {
-        //     println!("2");
-        // } else {
-        //     println!("3");
-        // }
     }
 }
