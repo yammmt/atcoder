@@ -33,21 +33,11 @@ fn main() {
         } else {
             println!("{}", 10u64.pow(10) * 2);
         }
-    } else if (t.len() == 2 && t[0] == '1' && t[1] == '1') || (t.len() == 3 && t[2] == '0') {
-        // pass
-        // 11 or 110
-        println!("{}", 10u64.pow(10));
-    } else if t.len() % 3 == 0 && t[0] == '1' && t[1] == '1' && t[t.len() - 1] == '0' {
-        // pass
-        // 110110...
-        println!("{}", 10u64.pow(10) - (t.len() / 3) as u64 + 1);
     } else {
-        let mut loopnum = 0;
-        for i in 1..t.len() {
-            if t[i] == '1' && t[i - 1] == '0' {
-                loopnum += 1;
-            }
+        let mut zeronum = t.iter().filter(|&c| *c == '0').count() as u64;
+        if t[t.len() - 1] != '0' {
+            zeronum += 1;
         }
-        println!("{}", 10u64.pow(10) - loopnum as u64);
+        println!("{}", 10u64.pow(10) - zeronum + 1);
     }
 }

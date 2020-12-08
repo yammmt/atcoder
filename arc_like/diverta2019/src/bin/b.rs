@@ -1,3 +1,6 @@
+// 9min
+// なぜか組み合わせ計算しようとしていた
+
 use proconio::input;
 
 fn main() {
