@@ -1,8 +1,9 @@
 // :fu: :fu:
 // 録画時間 -0.5 分は無視しても通るが嘘解法？
 
-// 公式真似ると [1, 2), [2, 3) で落ちるがいもす法が誤っている？
-// https://img.atcoder.jp/abc080/editorial.pdf
+// 1 チャンネルに録画機は最大一台であることをいもす計算五に弾かないと
+// [1, 2), [2, 3) で落ちる
+// いもすをそのまま足すような別解はない？
 
 use proconio::input;
 
@@ -22,7 +23,7 @@ fn main() {
     for im in &imos {
         let mut vcur = vec![0; 200004];
         let mut cur = 0;
-        for i in 0..200004 {
+        for i in 1..200004 {
             vcur[i] = im[i] + cur;
             cur = vcur[i];
         }
@@ -34,7 +35,9 @@ fn main() {
     for i in 0..200004 {
         let mut cur = 0;
         for j in 0..c {
-            cur += imossum[j][i];
+            if imossum[j][i] > 0 {
+                cur += 1;
+            }
         }
         ans = ans.max(cur);
     }
