@@ -9,17 +9,17 @@ fn main() {
     let mut ans = 0;
     let mut a_idx = 0;
     let mut a_idx_found = false;
-    for i in 0..s.len() {
+    for (i, c) in s.iter().enumerate() {
         match a_idx_found {
             true => {
-                if s[i] != 'Z' {
+                if *c != 'Z' {
                     continue;
                 }
 
                 ans = ans.max(i - a_idx + 1);
             },
             false => {
-                if s[i] != 'A' {
+                if *c != 'A' {
                     continue;
                 }
 
