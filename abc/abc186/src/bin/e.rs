@@ -1,61 +1,68 @@
+// :fu:
+
+// mod p の p が合成数となり得るためフェルマーの小定理では WA
+
 use proconio::input;
-// use proconio::marker::Chars;
-use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-// use permutohedron::heap_recursive;
+
+fn gcd(a: u64, b: u64) -> u64 {
+    if b == 0 {
+        a
+    } else {
+        gcd(b, a % b)
+    }
+}
+
+// m, n が互いに素であるときに mx + ny = 1
+fn extgcd(mut a: i64, m: i64) -> u64 {
+    let mut b = m;
+    let mut u = 1;
+    let mut v = 0;
+    while b > 0 {
+        let t = a / b;
+        a -= t * b;
+        std::mem::swap(&mut a, &mut b);
+        u -= t * v;
+        std::mem::swap(&mut u, &mut v);
+    }
+    u %= m;
+    if u < 0 {
+        u += m;
+    }
+    u as u64
+}
 
 fn main() {
     input! {
         t: usize,
-        nskt: [(usize, usize, usize); t],
+        nskt: [(u64, u64, u64); t],
     }
 
     for nsk in &nskt {
-        let mut visited = HashSet::new();
-        let mut m = 1;
-        let mut cnt = 0;
-        loop {
-            let bunshi = m * nsk.0 - nsk.1;
-            let bunbo = nsk.2;
-            if bunshi % bunbo == 0 {
-                println!("{}", bunshi / bunbo);
-                break;
-            } else {
-                if visited.contains(&(bunshi % bunbo)) {
-                    println!("-1");
-                    break;
-                }
-                visited.insert(bunshi % bunbo);
-                m += 1;
-                cnt += 1;
-                // if cnt > 10 {
-                //     println!("cnt err");
-                //     break;
-                // }
-            }
-        }
+        let mut a = nsk.2;
+        let mut b = nsk.0 - nsk.1;
+        let mut m = nsk.0;
+        // println!("a: {}", a);
+        // println!("b: {}", b);
+        // println!("m: {}", m);
 
-        // let mut ans = 1;
-        // let mut cnt = 0;
-        // loop {
-        //     let cur = (nsk.0 * ans - nsk.1) % nsk.2;
-        //     println!("cur: {}", cur);
-        //     if cur == 0 {
-        //         // TODO: ans 周期までに何回移動したかを出す
-        //         println!("{}", ans);
-        //         break;
-        //     } else if visited.contains(&cur) {
-        //         println!("-1");
-        //         break;
-        //     }
-        //     visited.insert(cur);
-        //     ans += 1;
-        //     cnt += 1;
-        //     if cnt > 100 {
-        //         println!("cnt err");
-        //         return;
-        //     }
-        // }
+        // https://高校数学.net/goudoushiki-houteishiki/
+        // ax ≡ b (mod m)
+        // gcd(a, m) == 1 or b % gcd(a, m) == 0 の場合に解がある
+        // 前者は明らかに後者を満たす
+        let d = gcd(a, m);
+        if b % d != 0 {
+            println!("-1");
+            continue;
+        }
+        // 公約数を取り除かなければ最短でない解を引く (サンプル最後)
+        let d = gcd(d, b);
+        a /= d;
+        b /= d;
+        m /= d;
+
+        println!(
+            "{}",
+            (extgcd(a as i64, m as i64) * b) % m
+        );
     }
 }

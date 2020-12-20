@@ -1,9 +1,4 @@
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-// use permutohedron::heap_recursive;
 
 fn seven_in_10(mut n: u64) -> bool {
     while n > 0 {
