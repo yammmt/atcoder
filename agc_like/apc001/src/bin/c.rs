@@ -1,8 +1,9 @@
-// WA 出る 1_27.txt/1_28.txt は手元だと 17/18 回で AC するが？
-// 1_20.txt 見ると N = 99,997 だと通り 99,999 だと通らないようだが
-// mid 計算でオーバーフロー起こす数でもなく謎
-// WA 出る三問はいずれも N 最大 (99,999)
-// 問題の性質上 panic 起こすと TLE になる？
+// https://atcoder.jp/contests/apc001/submissions/18940872
+// ↑が N 最大 (99,999) で手元では動くのに WA 引いていたのはどうして？
+// ジャッジサーバーでも N = 99,997 であれば AC
+// 初回に (不必要に) 半分に絞る際になにか情報が落ちている？でもそれなら手元でも動かないのでは
+
+// 問題の性質上 panic 起こすと TLE になるらしく panic 入れてデバッグすることはできない
 
 use std::io::{stdout, Write};
 
@@ -37,27 +38,11 @@ fn main() {
         return;
     }
 
-    println!("{}", n / 2);
-    stdout().flush().unwrap();
-    let t2: String = readln();
-    if t2 == "Vacant" {
-        // pass
-        return;
-    }
-
-    let mut ans_from;
-    let mut ans_to;
-    if err_in_range((0, &t1), (n / 2, &t2)) {
-        ans_from = (0, t1);
-        ans_to = (n / 2, t2);
-    } else {
-        ans_from = (n / 2, t1);
-        ans_to = (n, t2);
-    }
-
+    let mut ans_from = (0, t1);
+    let mut ans_to = (n - 1, "".to_string());
     while ans_to.0 - ans_from.0 > 1 {
-        println!("ans_from: {:?}", ans_from);
-        println!("ans_to: {:?}", ans_to);
+        // println!("ans_from: {:?}", ans_from);
+        // println!("ans_to: {:?}", ans_to);
         let mid = (ans_from.0 + ans_to.0) / 2;
         println!("{}", mid);
         stdout().flush().unwrap();
@@ -72,4 +57,7 @@ fn main() {
             false => ans_from = (mid, t),
         }
     }
+    println!("{}", ans_to.0);
+    stdout().flush().unwrap();
+    let _t: String = readln();
 }
