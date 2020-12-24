@@ -1,82 +1,61 @@
-// TLE
-// 組み合わせ次第で結果が変わるので DP ではない
+// bitDP
 // 買う買わない全列挙すると 2^1000 となり到底無理
 
 use proconio::input;
-use proconio::marker::Chars;
-use std::collections::HashMap;
-use std::collections::VecDeque;
+
+fn char_to_nsize(c: &Vec<char>) -> usize {
+    let mut ret = 0;
+    let mut two = 1;
+    for i in c {
+        if *i == 'Y' {
+            ret += two;
+        }
+        two *= 2;
+    }
+    ret
+}
 
 fn main() {
     input! {
         n: usize,
         m: usize,
-        scm: [(Chars, i64); m],
+        scm: [(String, i64); m],
     }
 
-    let mut cheapest = HashMap::new();
-    let mut vdq = VecDeque::new();
-    let mut could_buy = vec![false; n];
-    for i in 0..m {
-        let mut bought = vec![false; n];
-        for j in 0..n {
-            if scm[i].0[j] == 'Y' {
-                could_buy[j] = true;
-                bought[j] = true;
-            }
-        }
-        let boughtstr = bought
-            .iter()
-            .map(|t|
-                if *t {
-                    'Y'
-                } else {
-                    'N'
-                }
-            )
-            .collect::<String>();
-        let cnt = cheapest.entry(boughtstr.clone()).or_insert(std::i64::MAX);
-        if scm[i].1 < *cnt {
-            vdq.push_back((boughtstr, scm[i].1));
-            *cnt = scm[i].1;
-        }
+    let mut scm_new = vec![];
+    for sc in &scm {
+        let vc = (sc.0).chars().collect::<Vec<char>>();
+        let curset = char_to_nsize(&vc);
+        scm_new.push((curset, sc.1));
     }
-    if could_buy.iter().any(|a| !a) {
-        println!("-1");
-        return;
-    }
+    // println!("{:?}", scm_new);
 
-    let mut ans = std::i64::MAX;
-    while let Some(cur) = vdq.pop_back() {
-        let already_bought = (cur.0)
-            .chars()
-            .map(|a| a == 'Y')
-            .collect::<Vec<bool>>();
-        if already_bought.iter().all(|&a| a) {
-            ans = ans.min(cur.1);
+    let max_idx = 2u64.pow(n as u32) as usize;
+    let mut dp = vec![std::i64::MAX; max_idx + 1];
+    dp[0] = 0;
+    for i in 0..max_idx + 1 {
+        if dp[i] == std::i64::MAX {
+            // no routes to reach
             continue;
         }
 
-        for i in &scm {
-            for j in 0..n {
-                if (i.0)[j] == 'Y' && !already_bought[j] {
-                    let mut curbought = cur.0.clone().chars().collect::<Vec<char>>();
-                    for k in 0..n {
-                        if (i.0)[k] == 'Y' {
-                            curbought[k] = 'Y';
-                        }
-                    }
-                    let curbought_str = curbought.iter().collect::<String>();
-                    let cnt = cheapest.entry(curbought_str.clone()).or_insert(std::i64::MAX);
-                    if cur.1 + i.1 < *cnt {
-                        vdq.push_back((curbought_str, cur.1 + i.1));
-                        *cnt = cur.1 + i.1;
-                    }
-                    break;
-                }
+        for sc in &scm_new {
+            let next_idx = i as usize | sc.0;
+            if next_idx > max_idx {
+                continue;
             }
+
+            dp[next_idx] = dp[next_idx].min(dp[i] + sc.1);
         }
     }
+    // println!("{:?}", dp);
 
-    println!("{}", ans);
+    println!(
+        "{}",
+        if dp[max_idx - 1] == std::i64::MAX {
+            -1
+        } else {
+            dp[max_idx - 1]
+        }
+    );
 }

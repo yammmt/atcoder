@@ -23,6 +23,5 @@ fn main() {
         bukas[pn[i] as usize].insert(i + 1);
     }
 
-    for ab in &abq {
-    }
+    for ab in &abq {}
 }

@@ -20,7 +20,7 @@ fn main() {
         for i in 0..n {
             ax.push(abn[i].1 - mid * abn[i].0);
         }
-        ax.sort_unstable_by(|a, b| { a.partial_cmp(&b).unwrap() });
+        ax.sort_unstable_by(|a, b| a.partial_cmp(&b).unwrap());
 
         let mut cx = vec![];
         for i in 0..m {

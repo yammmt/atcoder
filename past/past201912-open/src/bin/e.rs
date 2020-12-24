@@ -23,7 +23,7 @@ fn main() {
                     b: usize,
                 }
                 follows[a - 1][b - 1] = "Y";
-            },
+            }
             2 => {
                 input! {
                     a: usize,
@@ -33,7 +33,7 @@ fn main() {
                         follows[a - 1][i] = "Y";
                     }
                 }
-            },
+            }
             // 3
             _ => {
                 input! {

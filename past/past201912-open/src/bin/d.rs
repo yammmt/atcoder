@@ -1,9 +1,4 @@
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-// use permutohedron::heap_recursive;
 
 fn main() {
     input! {
@@ -16,10 +11,10 @@ fn main() {
     }
     let mut ooi = 0;
     let mut sukunai = 0;
-    for i in 1..n + 1 {
-        if cnt[i] == 2 {
+    for (i, c) in cnt.iter().enumerate().skip(1) {
+        if *c == 2 {
             ooi = i;
-        } else if cnt[i] == 0 {
+        } else if *c == 0 {
             sukunai = i;
         }
     }

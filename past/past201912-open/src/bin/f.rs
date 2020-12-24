@@ -16,7 +16,7 @@ fn main() {
                     vs.push(curs.iter().collect::<String>());
                     curs.clear();
                     is_big_appeared = false;
-                },
+                }
                 false => {
                     is_big_appeared = true;
                 }
