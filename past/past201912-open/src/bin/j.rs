@@ -1,11 +1,11 @@
 // thanks to: https://atcoder.jp/contests/past201912-open/submissions/15662594
 
-// 独立したダイクストラだと例えば次のパターンで [1, 2] (0-indexed) 経由時に誤らない？
+// 独立したダイクストラだと例えば次のパターンで [1][2] (0-indexed) 経由時に誤らない？
 // xxxxo
 // xxooo
 // xxoxx
 // ooooo
-// と思ったが [4, 2] 経由で上書きされるので問題なかった
+// と思ったが [4][2] 経由で上書きされるので問題なかった
 
 use proconio::input;
 use std::cmp::Reverse;
