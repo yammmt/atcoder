@@ -9,7 +9,10 @@ fn main() {
     }
 
     let vc = s.chars().collect::<Vec<char>>();
-    let cmds = ["AA", "AB", "AX", "AY", "BA", "BB", "BX", "BY", "XA", "XB", "XX", "XY", "YA", "YB", "YX", "YY"];
+    let cmds = [
+        "AA", "AB", "AX", "AY", "BA", "BB", "BX", "BY", "XA", "XB", "XX", "XY", "YA", "YB", "YX",
+        "YY",
+    ];
     let mut ans = std::u32::MAX;
     for i in 0..cmds.len() {
         for j in i + 1..cmds.len() {
