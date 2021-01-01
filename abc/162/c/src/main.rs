@@ -15,20 +15,23 @@ fn main() {
         k: u8,
     }
 
+    // 愚直に全通り加算してもオーダーは変わらず間に合う
+    // 実行速度としては 55ms と 237ms くらい違う
     let mut ans: u32 = 0;
     for a in 1..k + 1 {
-        for b in a..k + 1 {
-            for c in b..k + 1 {
+        for b in 1..k + 1 {
+            for c in 1..k + 1 {
+                let cur = gcd(gcd(a, b), c);
                 if a == b && b == c {
-                    ans += gcd(gcd(a, b), c) as u32;
-                } else if a == b || b == c {
-                    ans += 3 * gcd(gcd(a, b), c) as u32;
+                    ans += cur as u32;
+                } else if a == b || b == c || c == a {
+                    ans += 3 * cur as u32;
                 } else {
-                    ans += 6 * gcd(gcd(a, b), c) as u32;
+                    ans += 6 * cur as u32;
                 }
-                // println!("{}, {}, {}: {}", a, b, c, gcd(gcd(a, b), c));
             }
         }
     }
+
     println!("{}", ans);
 }
