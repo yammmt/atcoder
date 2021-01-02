@@ -2,6 +2,7 @@
 
 use proconio::input;
 
+#[allow(clippy::needless_range_loop)]
 fn main() {
     input! {
         c33: [[i16; 3]; 3],

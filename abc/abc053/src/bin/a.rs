@@ -1,11 +1,15 @@
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-// use permutohedron::heap_recursive;
 
 fn main() {
     input! {
+        x: u16,
     }
+    println!(
+        "{}",
+        if x < 1200 {
+            "ABC"
+        } else {
+            "ARC"
+        }
+    );
 }
