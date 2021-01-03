@@ -1,3 +1,5 @@
+// TODO: ごちゃごちゃしているので模範解答見て書き改める
+
 use proconio::input;
 use std::collections::VecDeque;
 
@@ -18,7 +20,6 @@ fn main() {
         edges[ab.0].push(ab.1);
         edges[ab.1].push(ab.0);
     }
-    println!("{:?}", edges);
 
     let mut vdq = VecDeque::new();
     vdq.push_back(1);
@@ -46,35 +47,31 @@ fn main() {
             }
         }
     }
-    println!("iki: {:?}", iki_idx);
-    println!("kaeri: {:?}", kaeri_idx);
-    println!("imos_idx: {:?}", imos_idx);
+    // println!("iki: {:?}", iki_idx);
+    // println!("kaeri: {:?}", kaeri_idx);
+    // println!("imos_idx: {:?}", imos_idx);
 
     let mut imos = vec![0; 2 * n + 1];
     for tex in &texq {
-        if tex.0 == 1 {
-            imos[iki_idx[abn[tex.1].0]] += tex.2;
-            if iki_idx[abn[tex.1].0] < iki_idx[abn[tex.1].1] {
-                // NG 点を根とする木が始点を根とする木に含まれる
-                imos[iki_idx[abn[tex.1].1]] -= tex.2;
-                imos[kaeri_idx[abn[tex.1].1] + 1] += tex.2;
-            } else {
-                // NG 点を根とする木が始点を根とする木を含む
-                imos[kaeri_idx[abn[tex.1].1]] -= tex.2;
-            }
+        // println!("{:?}", tex);
+        let mut start_pt = abn[tex.1].0;
+        let mut ng_pt = abn[tex.1].1;
+        if tex.0 == 2 {
+            std::mem::swap(&mut start_pt, &mut ng_pt);
+        }
+
+        if iki_idx[start_pt] < iki_idx[ng_pt] {
+            // NG 点を根とする木が始点を根とする木に含まれる
+            imos[0] += tex.2;
+            imos[iki_idx[ng_pt]] -= tex.2;
+            imos[kaeri_idx[ng_pt] + 1] += tex.2;
         } else {
-            imos[iki_idx[abn[tex.1].1]] += tex.2;
-            if iki_idx[abn[tex.1].1] < iki_idx[abn[tex.1].0] {
-                // NG 点を根とする木が始点を根とする木に含まれる
-                imos[iki_idx[abn[tex.1].0]] -= tex.2;
-                imos[kaeri_idx[abn[tex.1].0] + 1] += tex.2;
-            } else {
-                // NG 点を根とする木が始点を根とする木を含む
-                imos[kaeri_idx[abn[tex.1].0]] -= tex.2;
-            }
+            // NG 点を根とする木が始点を根とする木を含む
+            imos[iki_idx[start_pt]] += tex.2;
+            imos[kaeri_idx[start_pt] + 1] -= tex.2;
         }
     }
-    println!("imos: {:?}", imos);
+    // println!("imos: {:?}", imos);
 
     // calc imos
     let mut imossum = vec![0; 2 * n + 1];
@@ -82,7 +79,7 @@ fn main() {
     for i in 1..imos.len() {
         imossum[i] = imossum[i - 1] + imos[i];
     }
-    println!("imossum: {:?}", imossum);
+    // println!("imossum: {:?}", imossum);
 
     let mut ans = vec![0; n + 1];
     for i in 1..imossum.len() {
@@ -90,6 +87,7 @@ fn main() {
     }
 
     for a in ans.iter().skip(1) {
+        // 同頂点を二度計算している都合
         println!("{}", a / 2);
     }
 }
