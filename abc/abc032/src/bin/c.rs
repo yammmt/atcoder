@@ -20,7 +20,7 @@ fn main() {
             cur *= sn[right];
             right += 1;
         }
-        ans = ans.max(right - left );
+        ans = ans.max(right - left);
         if left == right {
             right += 1;
         } else {
