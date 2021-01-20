@@ -1,18 +1,20 @@
-// TODO: ごちゃごちゃしているので模範解答見て書き改める
+// 辺を指定されるため、操作対象の点の距離は必ず 1 になる
+// t による分岐は swap かけて済ませてやれば実装が数行分軽くなる
+
+// 二点間の距離が不定の場合は部分木判定やらオイラーツアーやらな単語が出てくる
+// 考察も実装も重くなる
+// https://atcoder.jp/contests/abc187/submissions/19164468
 
 use proconio::input;
 use std::collections::VecDeque;
 
+#[allow(clippy::many_single_char_names)]
 fn main() {
     input! {
         n: usize,
-        abn_old: [(usize, usize); n - 1],
+        abn: [(usize, usize); n - 1],
         q: usize,
         texq: [(usize, usize, i64); q],
-    }
-    let mut abn = vec![(0, 0)];
-    for ab in &abn_old {
-        abn.push(*ab);
     }
 
     let mut edges = vec![vec![]; n + 1];
@@ -21,73 +23,58 @@ fn main() {
         edges[ab.1].push(ab.0);
     }
 
+    let mut ranks = vec![std::usize::MAX; n + 1];
     let mut vdq = VecDeque::new();
     vdq.push_back(1);
-    let mut iki_idx = vec![0; n + 1];
-    let mut kaeri_idx = vec![0; n + 1];
-    let mut imos_idx = vec![0; 2 * n + 1];
-    let mut idx = 0;
+    let mut rank = 0;
     while let Some(cur) = vdq.pop_back() {
-        // println!("cur: {}", cur);
-        idx += 1;
-        imos_idx[idx] = cur;
-        if iki_idx[cur] == 0 {
-            iki_idx[cur] = idx;
-        } else {
-            kaeri_idx[cur] = idx;
-        }
-        if kaeri_idx[cur] != 0 {
+        if ranks[cur] != std::usize::MAX {
             continue;
         }
 
-        vdq.push_back(cur);
+        ranks[cur] = rank;
+        rank += 1;
         for e in &edges[cur] {
-            if iki_idx[*e] == 0 {
+            if ranks[*e] == std::usize::MAX {
                 vdq.push_back(*e);
             }
         }
     }
-    // println!("iki: {:?}", iki_idx);
-    // println!("kaeri: {:?}", kaeri_idx);
-    // println!("imos_idx: {:?}", imos_idx);
 
-    let mut imos = vec![0; 2 * n + 1];
+    let mut c = vec![0; n + 1];
     for tex in &texq {
-        // println!("{:?}", tex);
-        let mut start_pt = abn[tex.1].0;
-        let mut ng_pt = abn[tex.1].1;
+        let mut a = abn[tex.1 - 1].0;
+        let mut b = abn[tex.1 - 1].1;
         if tex.0 == 2 {
-            std::mem::swap(&mut start_pt, &mut ng_pt);
+            std::mem::swap(&mut a, &mut b);
         }
 
-        if iki_idx[start_pt] < iki_idx[ng_pt] {
-            // NG 点を根とする木が始点を根とする木に含まれる
-            imos[0] += tex.2;
-            imos[iki_idx[ng_pt]] -= tex.2;
-            imos[kaeri_idx[ng_pt] + 1] += tex.2;
+        if ranks[a] < ranks[b] {
+            c[1] += tex.2;
+            c[b] -= tex.2;
         } else {
-            // NG 点を根とする木が始点を根とする木を含む
-            imos[iki_idx[start_pt]] += tex.2;
-            imos[kaeri_idx[start_pt] + 1] -= tex.2;
+            c[a] += tex.2;
         }
     }
-    // println!("imos: {:?}", imos);
 
-    // calc imos
-    let mut imossum = vec![0; 2 * n + 1];
-    imossum[0] = imos[0];
-    for i in 1..imos.len() {
-        imossum[i] = imossum[i - 1] + imos[i];
+    let mut anss = vec![std::usize::MAX; n + 1];
+    let mut vdq = VecDeque::new();
+    vdq.push_back((1, 0i64));
+    while let Some(cur) = vdq.pop_back() {
+        if anss[cur.0] != std::usize::MAX {
+            continue;
+        }
+
+        let pts = cur.1 + c[cur.0];
+        anss[cur.0] = pts as usize;
+        for e in &edges[cur.0] {
+            if anss[*e] == std::usize::MAX {
+                vdq.push_back((*e, pts));
+            }
+        }
     }
-    // println!("imossum: {:?}", imossum);
 
-    let mut ans = vec![0; n + 1];
-    for i in 1..imossum.len() {
-        ans[imos_idx[i]] += imossum[i];
-    }
-
-    for a in ans.iter().skip(1) {
-        // 同頂点を二度計算している都合
-        println!("{}", a / 2);
+    for ans in anss.iter().skip(1) {
+        println!("{}", ans);
     }
 }
