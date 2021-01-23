@@ -1,12 +1,33 @@
-// use petgraph::unionfind::UnionFind;
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-// use permutohedron::heap_recursive;
+use proconio::marker::Chars;
 
 fn main() {
     input! {
+        n: usize,
+        mut cn: [Chars; n],
     }
+
+    // cn.reverse();
+    let mut sn = vec![];
+    for c in &cn {
+        sn.push(c.iter().collect::<String>());
+    }
+
+    let mut dp = vec![vec![0u64; 2]; n + 1];
+    dp[0][0] = 1;
+    dp[0][1] = 1;
+    for i in 0..n {
+        let total = (dp[i][0] + dp[i][1]) * 2;
+        if sn[i] == "OR".to_string() {
+            dp[i + 1][0] = total - dp[i][1];
+            dp[i + 1][1] = dp[i][1];
+        } else {
+            // AND
+            dp[i + 1][0] = dp[i][0];
+            dp[i + 1][1] = total - dp[i][0];
+        }
+    }
+    // println!("{:?}", dp);
+
+    println!("{}", dp[n][0]);
 }
