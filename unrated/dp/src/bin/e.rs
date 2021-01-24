@@ -1,4 +1,4 @@
-// :fu:
+// :fu: :fu: :fu:
 
 use proconio::input;
 
@@ -8,17 +8,15 @@ fn main() {
         w: usize,
         wvn: [(usize, usize); n],
     }
+    let vmax = 100_001;
 
-    // i 番目品定め後にその期待値を達成する最小の重さを記録
-    // dp 対象は期待値に等しくなる最小の重さであり、その期待値以上を達成する最小の重さではない
-    // 今回は達成できる最大の期待値で重さ制限以下のものを求めるため問題はない
-    let mut dp = vec![vec![std::usize::MAX / 2; 100001]; n + 1];
+    // 価値 v を達成する最小の重さ
+    let mut dp = vec![vec![std::usize::MAX / 2; vmax]; n + 1];
     dp[0][0] = 0;
-    for i in 0..n {
-        for j in 0..dp[i].len() {
-            dp[i + 1][j] = if j >= wvn[i].1 {
-                // println!("j: {}, wvn[i].1: {}", j, wvn[i].1);
-                (dp[i][j - wvn[i].1] + wvn[i].0).min(dp[i][j])
+    for (i, wv) in wvn.iter().enumerate() {
+        for j in 0..vmax {
+            dp[i + 1][j] = if j >= wv.1 {
+                dp[i][j].min(dp[i][j - wv.1] + wv.0)
             } else {
                 dp[i][j]
             };
@@ -27,10 +25,9 @@ fn main() {
     }
 
     let mut ans = 0;
-    for i in (0..dp[n].len()).rev() {
-        if dp[n][i] <= w {
-            ans = i;
-            break;
+    for j in 0..vmax {
+        if dp[n][j] <= w {
+            ans = ans.max(j);
         }
     }
     println!("{}", ans);

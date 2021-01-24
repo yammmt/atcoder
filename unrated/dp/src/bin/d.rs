@@ -1,5 +1,3 @@
-// :fu:
-
 use proconio::input;
 
 fn main() {
@@ -10,13 +8,11 @@ fn main() {
     }
 
     let mut dp = vec![vec![0; w + 1]; n + 1];
-    // 品物 i を選ぶか否か
-    for i in 0..n {
-        // j: 今の重さ
+    // i 個目の荷物
+    for (i, wv) in wvn.iter().enumerate() {
         for j in 0..w + 1 {
-            dp[i + 1][j] = if j >= wvn[i].0 {
-                // 品物 i を選べる場合
-                (dp[i][j - wvn[i].0] + wvn[i].1).max(dp[i][j])
+            dp[i + 1][j] = if j >= wv.0 {
+                dp[i][j].max(dp[i][j - wv.0] + wv.1)
             } else {
                 dp[i][j]
             };

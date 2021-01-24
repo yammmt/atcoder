@@ -1,13 +1,15 @@
+// WA: 32bit でオーバーフロー
+// 条件を逆にして dp して考え纏まらず死
+
 use proconio::input;
 use proconio::marker::Chars;
 
 fn main() {
     input! {
         n: usize,
-        mut cn: [Chars; n],
+        cn: [Chars; n],
     }
 
-    // cn.reverse();
     let mut sn = vec![];
     for c in &cn {
         sn.push(c.iter().collect::<String>());
@@ -18,7 +20,7 @@ fn main() {
     dp[0][1] = 1;
     for i in 0..n {
         let total = (dp[i][0] + dp[i][1]) * 2;
-        if sn[i] == "OR".to_string() {
+        if sn[i] == "OR" {
             dp[i + 1][0] = total - dp[i][1];
             dp[i + 1][1] = dp[i][1];
         } else {
