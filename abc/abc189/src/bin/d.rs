@@ -2,17 +2,11 @@
 // 条件を逆にして dp して考え纏まらず死
 
 use proconio::input;
-use proconio::marker::Chars;
 
 fn main() {
     input! {
         n: usize,
-        cn: [Chars; n],
-    }
-
-    let mut sn = vec![];
-    for c in &cn {
-        sn.push(c.iter().collect::<String>());
+        sn: [String; n],
     }
 
     let mut dp = vec![vec![0u64; 2]; n + 1];
