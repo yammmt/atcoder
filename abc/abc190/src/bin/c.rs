@@ -2,6 +2,20 @@
 
 use proconio::input;
 
+fn bit_rows(n: u32) -> Vec<Vec<usize>> {
+    let mut ret = vec![];
+    for b in 0..2u64.pow(n) {
+        let mut cur = vec![];
+        for i in 0..n {
+            if b & (1 << i) > 0 {
+                cur.push(i as usize);
+            }
+        }
+        ret.push(cur);
+    }
+    ret
+}
+
 fn main() {
     input! {
         n: usize,
@@ -12,23 +26,16 @@ fn main() {
     }
 
     let mut ans = 0;
-    for bit_row in 0..2u32.pow(k as u32) {
-        let mut use_c = vec![];
-        for i in 0..k {
-            if bit_row & (1 << i) > 0 {
-                use_c.push(i);
-            }
-        }
-        // println!("{:?}", use_c);
+    let ptrns = bit_rows(k as u32);
+    for p in &ptrns {
         let mut cur = vec![0; n];
         for i in 0..k {
-            if use_c.contains(&i) {
+            if p.contains(&i) {
                 cur[cdk[i].0 - 1] += 1;
             } else {
                 cur[cdk[i].1 - 1] += 1;
             }
         }
-
         let mut cur_ans = 0;
         for ab in &abm {
             if cur[ab.0 - 1] > 0 && cur[ab.1 - 1] > 0 {
