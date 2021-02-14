@@ -1,10 +1,6 @@
-// use petgraph::unionfind::UnionFind;
+// ARC-A も難易度詐欺が目立つような
+
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-// use permutohedron::heap_recursive;
 
 fn main() {
     input! {
