@@ -1,12 +1,14 @@
 // X が max 60 桁
-// X = 1 だと進数関係なく全部満たすのでは？
+// X = 1 だと進数関係なく全部満たすのでは？と思ったが値の種類を聞かれているのであった
+
+// WA: 誤読, 文字リテラルの格納順が逆
 
 use proconio::input;
 
 // X に合わせるよう 10 進数表記 M を base 進数表記にする
 // 二つのベクタのサイズで判定 -> サイズ同じなら桁大きい方から大小判定する
 fn is_m_base_n_pass(mut m: u128, x: &Vec<char>, base: u128) -> bool {
-    println!("m: {:?}, x: {:?}", m, x);
+    // println!("m: {:?}, x: {:?}", m, x);
     if m == 1 {
         let v = vec!['1'];
         return !is_x_greater_than_m(&v, &x);
@@ -24,7 +26,7 @@ fn is_m_base_n_pass(mut m: u128, x: &Vec<char>, base: u128) -> bool {
 
 // 小さい順に値を格納されている
 fn is_x_greater_than_m(m: &Vec<char>, x: &Vec<char>) -> bool {
-    println!("m: {:?}, x: {:?}", m, x);
+    // println!("m: {:?}, x: {:?}", m, x);
     if x.len() > m.len() {
         true
     } else if x.len() < m.len() {
@@ -48,7 +50,8 @@ fn main() {
         m: u128,
     }
 
-    let x = cx.chars().collect::<Vec<char>>();
+    let mut x = cx.chars().collect::<Vec<char>>();
+    x.reverse();
 
     let mut vx = vec![];
     for i in 0..x.len() {
@@ -57,12 +60,24 @@ fn main() {
     vx.sort_unstable();
     let d = vx[vx.len() - 1] as u128;
 
+    if x.len() == 1 {
+        println!(
+            "{}",
+            if x[0].to_digit(10).unwrap() as u128 > m {
+                "0"
+            } else {
+                "1"
+            }
+        );
+        return;
+    }
+
     // d + 1 桁時点で M より大きければもう終わり
     if !is_m_base_n_pass(m, &x, d + 1) {
         println!("0");
         return;
     }
-    println!("pass");
+    // println!("pass");
 
     let mut fail = std::u64::MAX as u128;
     let mut pass = d + 1;
