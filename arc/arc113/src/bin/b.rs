@@ -1,4 +1,5 @@
-// :fu: :fu: 数問 21-02
+// :fu: :fu: :fu: 数問 21-02
+// WA: 最後は周期のインデックス
 
 use proconio::input;
 
@@ -22,11 +23,6 @@ fn main() {
         c: u64,
     }
 
-    if a % 10 == 1 {
-        println!("1");
-        return;
-    }
-
     let mut cycle = vec![999; 11];
     let mut cur = 1;
     let mut cycle_len = 1;
@@ -42,12 +38,12 @@ fn main() {
     }
     cycle_len -= 1;
     // println!("{:?}", cycle);
-    // println!("{}", cycle_len);
+    // println!("cycle_len: {}", cycle_len);
 
     let bcmod = repeat_square(b, c, cycle_len);
-    // println!("{:?}", bcmod);
+    // println!("bcmod: {}", bcmod);
 
-    for i in 1..11 {
+    for i in 0..11 {
         if cycle[i] != 999 && cycle[i] % cycle_len == bcmod {
             println!("{}", i);
             return;
