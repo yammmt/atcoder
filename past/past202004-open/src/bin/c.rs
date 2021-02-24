@@ -7,7 +7,7 @@ fn main() {
         ss: [Chars; n],
     }
 
-    let mut ans = ss.clone();
+    let mut ans = ss;
     for i in (0..n - 1).rev() {
         for j in 1.. 2 * n - 1 {
             if ans[i][j] != '#' {
