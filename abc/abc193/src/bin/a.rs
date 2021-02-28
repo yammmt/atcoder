@@ -1,12 +1,9 @@
-// use petgraph::unionfind::UnionFind;
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-// use permutohedron::heap_recursive;
 
 fn main() {
     input! {
+        a: f64,
+        b: f64,
     }
+    println!("{}", 100.0 * (a-b)/a);
 }
