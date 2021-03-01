@@ -1,9 +1,8 @@
+// NOT WORK
+// 難易度高めなので後回しにする
+
 use proconio::input;
 use std::collections::HashSet;
-
-// const IMPOSSIBLE: i64 = 999_999_999_999;
-
-// 逐次更新だとループ検出ができないので剰余でループ取る系？わからん
 
 fn main() {
     input! {

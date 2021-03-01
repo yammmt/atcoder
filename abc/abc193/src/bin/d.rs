@@ -1,4 +1,4 @@
-// :fu: 21-02 焦らない
+// :fu: 21-02 数問ではあるが焦らない
 
 use proconio::input;
 use proconio::marker::Chars;
