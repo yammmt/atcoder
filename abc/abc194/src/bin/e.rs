@@ -1,4 +1,5 @@
 // 遅い
+// Rust の AC 提出にはやたらと O(n) が少ない
 
 use proconio::input;
 
