@@ -1,10 +1,8 @@
-// -*- coding:utf-8-unix -*-
-
-// :fu:
+// :fu: :fu: 21-03
 
 use proconio::input;
 
-fn xorsum(n: u64) -> u64 {
+fn xor_sum(n: u64) -> u64 {
     let one_num = (n + 1) / 2;
     match n % 2 {
         0 => (one_num % 2) ^ n,
@@ -17,12 +15,12 @@ fn main() {
         a: u64,
         b: u64,
     }
-
     println!(
         "{}",
-        match a {
-            0 => xorsum(b),
-            _ => xorsum(b) ^ xorsum(a - 1),
+        if a == 0 {
+            xor_sum(b)
+        } else {
+            xor_sum(b) ^ xor_sum(a - 1)
         }
     );
 }
