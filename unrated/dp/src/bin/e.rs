@@ -1,6 +1,8 @@
-// :fu: :fu: :fu:
+// :fu: 21-03 どうして
 
 use proconio::input;
+
+const NOT_YET: usize = std::usize::MAX / 2;
 
 fn main() {
     input! {
@@ -8,27 +10,28 @@ fn main() {
         w: usize,
         wvn: [(usize, usize); n],
     }
-    let vmax = 100_001;
 
-    // 価値 v を達成する最小の重さ
-    let mut dp = vec![vec![std::usize::MAX / 2; vmax]; n + 1];
-    dp[0][0] = 0;
-    for (i, wv) in wvn.iter().enumerate() {
-        for j in 0..vmax {
-            dp[i + 1][j] = if j >= wv.1 {
-                dp[i][j].min(dp[i][j - wv.1] + wv.0)
-            } else {
-                dp[i][j]
-            };
-        }
-        // println!("{:?}", dp);
-    }
+    // その価値を達成する最小の重さ
+    let mut dp = vec![NOT_YET; 100_002];
+    dp[0] = 0;
+    for wv in &wvn {
+        let mut new_dp = dp.clone();
+        for i in 0..dp.len() {
+            let next_i = i + wv.1;
+            if dp[i] == NOT_YET || next_i >= dp.len() {
+                continue;
+            }
 
-    let mut ans = 0;
-    for j in 0..vmax {
-        if dp[n][j] <= w {
-            ans = ans.max(j);
+            new_dp[next_i] = dp[next_i].min(dp[i] + wv.0);
+        }
+        dp = new_dp;
+    }
+    // println!("{:?}", dp);
+
+    for i in (0..dp.len()).rev() {
+        if dp[i] <= w {
+            println!("{}", i);
+            return;
         }
     }
-    println!("{}", ans);
 }
