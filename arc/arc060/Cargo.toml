@@ -1,0 +1,15 @@
+[package]
+name = "arc060"
+version = "0.1.0"
+authors = ["yammmt <cu.cs.y20@gmail.com>"]
+edition = "2018"
+
+# dependencies added to new project
+[dependencies]
+petgraph = "=0.5.0"
+permutohedron = "=0.2.4"
+proconio = { version = "=0.3.6", features = ["derive"] }
+
+[profile.release]
+lto = true
+panic = 'abort'
