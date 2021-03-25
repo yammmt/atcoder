@@ -1,29 +1,27 @@
-// -*- coding:utf-8-unix -*-
-
 // See https://qiita.com/tanakh/items/a312a9bd684658ab1e7b#c---repsept
 
 use proconio::input;
-use std::collections::BTreeSet;
+use std::collections::HashSet;
 
 fn main() {
     input! {
         k: u64,
     }
 
-    let mut bts = BTreeSet::new();
-    let mut m = 7 % k;
     let mut ans = 1;
+    let mut seven = 7;
+    let mut appear_set = HashSet::new();
     loop {
-        if m == 0 {
+        let cur = seven % k;
+        if cur == 0 {
             println!("{}", ans);
-            break;
-        } else if bts.contains(&m) {
+            return;
+        } else if appear_set.contains(&cur) {
             println!("-1");
-            break;
+            return;
         }
-
-        bts.insert(m);
-        m = (m * 10 + 7) % k;
+        appear_set.insert(cur);
+        seven = cur * 10 + 7;
         ans += 1;
     }
 }
