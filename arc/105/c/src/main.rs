@@ -1,62 +1,91 @@
-// -*- coding:utf-8-unix -*-
-
-// サンプル通るが TLE/WA
+// :fu: 21-04 diff の割には解きたい でも DP 遷移がわからないので EDPC もう少し見るべきか
+// 二点間しかみないとサンプル 4 で落ちる
 
 use permutohedron::heap_recursive;
 use proconio::input;
+
+// v[i] >= k を満たす最小の i を返す (or k 以下である v の要素数)
+// 見つからなければ `v.len()` を返す
+// `v` はソートされていること
+fn lower_bound(v: &[usize], k: usize) -> usize {
+    let mut low: isize = -1;
+    let mut high = v.len() as isize;
+
+    while high - low > 1 {
+        let mid = (low + high) / 2;
+        if v[mid as usize] >= k {
+            high = mid;
+        } else {
+            low = mid;
+        }
+    }
+    high as usize
+}
 
 fn main() {
     input! {
         n: usize,
         m: usize,
-        mut w: [usize; n],
-        lv: [(usize, usize); m],
+        wn: [usize; n],
+        mut lvm: [(usize, usize); m],
     }
 
-    // w <= 8 より sort は十分高速
-    w.sort();
-    // min(v[i]) < max(w[j]) が存在すれば不可
-    let mut vmin = std::usize::MAX;
-    for i in &lv {
-        vmin = vmin.min(i.1);
-    }
-    if vmin < w[0] {
+    // 一匹ですら渡れなければ不可能
+    let mut vmax = 0;
+    lvm.iter().for_each(|lv| vmax = vmax.max(lv.1));
+    if *wn.iter().max().unwrap() > vmax {
         println!("-1");
         return;
     }
 
-    // 全通りの配置を試し, パターンごとの間隔の最小値が答え
-    // パターンごとの間隔は区間ごとの間隔の最大値
-    let mut ans = std::u64::MAX;
-    heap_recursive(&mut w, |p| {
-        let mut cans = 0u64;
-        let mut lightest_v = lv[0].1 as u64;
-        // 各区間ごとに先頭と末尾の差を求める
-        for i in &lv {
-            // println!("{:?}", i);
-            let mut section_ans = 0;
-            let mut total_weight = 0;
-            for j in 0..p.len() {
-                if total_weight + p[j] > i.1 {
-                    section_ans += i.0 as u64;
-                    total_weight = p[j];
-                } else {
-                    total_weight += p[j];
-                }
+    // すべての重さに対してこれだけ距離を取らなければならないという値を前計算しておく
+    // パーツの重さは重複しうるが dedup してもしなくても同じ
+    lvm.sort_unstable_by(|a, b| (a.1).cmp(&b.1));
+    // println!("{:?}", lvm);
+    // まっとうなコードではタプルかなにかで管理すべき
+    let mut required_w = vec![];
+    let mut required_dist = vec![];
+    for (i, lv) in lvm.iter().enumerate() {
+        required_w.push(lv.1);
+        required_dist.push(
+            if i == 0 {
+                lv.0
+            } else {
+                lv.0.max(required_dist[i - 1])
             }
-            cans = cans.max(section_ans);
-            // 今空いている間隔は同時に橋を渡る重さが `lightest_v` 以下
-            if lightest_v > i.1 as u64 && cans != section_ans {
-                // println!("+= {}", i.1);
-                cans += i.0 as u64;
-            }
-            lightest_v = lightest_v.min(i.1 as u64);
-            // println!("{:?}", lightest_v);
-        }
-        // panic!();
-        // println!("p: {:?}", p);
-        // println!("cans: {:?}", cans);
-        ans = ans.min(cans);
+        );
+    }
+
+    // ラクダの順番は全通り試す
+    let mut permutations = vec![];
+    let mut data = (0..n).collect::<Vec<usize>>();
+    heap_recursive(&mut data, |p| {
+        permutations.push(p.to_vec());
     });
+
+    let mut ans = std::usize::MAX / 2;
+    for ps in &permutations {
+        // println!("{:?}", ps);
+        let mut cur_w = 0;
+        let mut cur_d = 0;
+
+        for i in ps {
+            let next_w = cur_w + wn[*i];
+            // println!("next_w: {}", next_w);
+            if next_w <= required_w[0] {
+                cur_w = next_w;
+                continue;
+            }
+
+            let dist_i = lower_bound(&required_w, next_w);
+            // println!("dist_i: {}", dist_i);
+            cur_d += required_dist[dist_i - 1];
+            cur_w = wn[*i];
+        }
+
+        // println!("  {}", cur_d);
+        ans = ans.min(cur_d);
+    }
+
     println!("{}", ans);
 }
