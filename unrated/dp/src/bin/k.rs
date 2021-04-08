@@ -1,5 +1,3 @@
-// :fu:
-
 use proconio::input;
 
 fn main() {
@@ -9,19 +7,20 @@ fn main() {
         an: [usize; n],
     }
 
-    // 負けの盤面を相手に押し付けられれば勝ち
+    // 先手が勝つなら true
     let mut dp = vec![false; k + 1];
-    for i in 0..k {
+    for i in 0..k + 1 {
         if dp[i] {
             continue;
         }
 
         for a in &an {
-            if i + *a > k {
+            let next_i = i + *a;
+            if next_i > k {
                 break;
             }
 
-            dp[i + *a] = true;
+            dp[next_i] = true;
         }
     }
     // println!("{:?}", dp);
