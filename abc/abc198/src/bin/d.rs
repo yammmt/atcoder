@@ -1,20 +1,10 @@
-// :fu: :fu: :fu: 21-04
+// :fu: :fu: :fu: 21-04 実装が重い
+// Rust の permutation/clojure の仕様で詰んだしオーバーフロー見落として泥沼
 
-// use petgraph::unionfind::UnionFind;
 use proconio::input;
-use proconio::marker::Chars;
-use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
 use permutohedron::heap_recursive;
 
-fn main() {
-    input! {
-        s1: Chars,
-        s2: Chars,
-        s3: Chars,
-    }
-
+fn solve(s1: Vec<char>, s2: Vec<char>, s3: Vec<char>) {
     let mut appeared = vec![false; 26];
     for s in &s1 {
         appeared[(*s as u8 - b'a') as usize] = true;
@@ -31,129 +21,70 @@ fn main() {
         return;
     }
 
-    let mut char_idx = vec![999; 26];
-    let mut j = 0;
-    for (i, ap) in appeared.iter().enumerate() {
-        if !ap {
-            continue;
-        }
-
-        char_idx[i] = j;
-        j += 1;
-    }
-    // println!("cidx: {:?}", char_idx);
-    let mut char_idx_idx = vec![999; 26];
-    let mut j = 0;
-    for i in 0..char_idx.len() {
-        if char_idx[i] == 999 {
-            continue;
-        }
-
-        char_idx_idx[j] = i;
-        j += 1;
-    }
-    // println!("{:?}", char_idx_idx);
-    // return;
-
-    let mut searched = HashSet::new();
+    let mut cleared = false;
     let mut data = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     heap_recursive(&mut data, |p| {
-        let mut orders = vec![];
-        orders.push(p.to_vec());
+        if !cleared {
+            let mut char_to_num = vec![999i64; 26];
+            let mut ci = 0;
+            for nn in p {
+                while ci < 26 && !appeared[ci] {
+                    ci += 1;
+                }
+                if ci == 26 {
+                    break;
+                }
 
-        for oo in &orders {
-            // println!("{:?}", oo);
-            let mut cur_map = vec![999; 26];
-            for i in 0..char_kinds {
-                // println!("  i: {}", i);
-                cur_map[char_idx_idx[i]] = oo[i];
+                char_to_num[ci] = *nn;
+                ci += 1;
             }
+            // println!("{:?}", char_to_num);
 
-            if !searched.contains(&cur_map) {
-                // println!("{:?}", cur_map);
-                searched.insert(cur_map.clone());
-                // w: 先頭 0 は弾く
-                if cur_map[(s1[0] as u8 - b'a') as usize] == 0
-                    || cur_map[(s2[0] as u8 - b'a') as usize] == 0
-                    || cur_map[(s3[0] as u8 - b'a') as usize] == 0
-                {
-                    let mut new_s1 = 0i64;
-                    let mut new_s2 = 0i64;
-                    let mut new_s3 = 0i64;
-                    for s in &s1 {
-                        new_s1 *= 10;
-                        new_s1 += cur_map[(*s as u8 - b'a') as usize];
-                    }
-                    for s in &s2 {
-                        new_s2 *= 10;
-                        new_s2 += cur_map[(*s as u8 - b'a') as usize];
-                    }
-                    for s in &s3 {
-                        new_s3 *= 10;
-                        new_s3 += cur_map[(*s as u8 - b'a') as usize];
-                    }
-                    if new_s1 + new_s2 == new_s3 {
-                        println!("{}", new_s1);
-                        println!("{}", new_s2);
-                        println!("{}", new_s3);
-                        return;
-                    }
+            // 先頭 0 は省く
+            if  char_to_num[(s1[0] as u8 - b'a') as usize] != 0
+                && char_to_num[(s2[0] as u8 - b'a') as usize] != 0
+                && char_to_num[(s3[0] as u8 - b'a') as usize] != 0
+            {
+                let mut s1_new = 0;
+                let mut s2_new = 0;
+                let mut s3_new = 0;
+                for s in &s1 {
+                    s1_new *= 10;
+                    s1_new += char_to_num[(*s as u8 - b'a') as usize];
+                }
+                for s in &s2 {
+                    s2_new *= 10;
+                    s2_new += char_to_num[(*s as u8 - b'a') as usize];
+                }
+                for s in &s3 {
+                    s3_new *= 10;
+                    s3_new += char_to_num[(*s as u8 - b'a') as usize];
+                }
+
+                if s1_new + s2_new == s3_new {
+                    println!("{}", s1_new);
+                    println!("{}", s2_new);
+                    println!("{}", s3_new);
+                    cleared = true;
+                    // return; // できない
                 }
             }
         }
     });
-    // println!("{:?}", orders);
-    // return;
 
+    if !cleared {
+        println!("UNSOLVABLE");
+    }
+}
 
-    // for oo in &orders {
-    //     // println!("{:?}", oo);
-    //     let mut cur_map = vec![999; 26];
-    //     for i in 0..char_kinds {
-    //         // println!("  i: {}", i);
-    //         cur_map[char_idx_idx[i]] = oo[i];
-    //     }
-
-    //     if searched.contains(&cur_map) {
-    //         continue;
-    //     }
-    //     // println!("{:?}", cur_map);
-
-    //     searched.insert(cur_map.clone());
-    //     // w: 先頭 0 は弾く
-    //     if cur_map[(s1[0] as u8 - b'a') as usize] == 0
-    //         || cur_map[(s2[0] as u8 - b'a') as usize] == 0
-    //         || cur_map[(s3[0] as u8 - b'a') as usize] == 0
-    //     {
-    //         continue;
-    //     }
-
-    //     let mut new_s1 = 0i64;
-    //     let mut new_s2 = 0i64;
-    //     let mut new_s3 = 0i64;
-    //     for s in &s1 {
-    //         new_s1 *= 10;
-    //         new_s1 += cur_map[(*s as u8 - b'a') as usize];
-    //     }
-    //     for s in &s2 {
-    //         new_s2 *= 10;
-    //         new_s2 += cur_map[(*s as u8 - b'a') as usize];
-    //     }
-    //     for s in &s3 {
-    //         new_s3 *= 10;
-    //         new_s3 += cur_map[(*s as u8 - b'a') as usize];
-    //     }
-    //     if new_s1 + new_s2 == new_s3 {
-    //         println!("{}", new_s1);
-    //         println!("{}", new_s2);
-    //         println!("{}", new_s3);
-    //         return;
-    //     }
-    //     // println!("{}", new_s1);
-    //     // println!("{}", new_s2);
-    //     // println!("{}", new_s3);
-    //     // return;
-    // }
-
-    println!("UNSOLVABLE");
+fn main() {
+    input! {
+        s1: String,
+        s2: String,
+        s3: String,
+    }
+    let vs1 = s1.chars().collect::<Vec<char>>();
+    let vs2 = s2.chars().collect::<Vec<char>>();
+    let vs3 = s3.chars().collect::<Vec<char>>();
+    solve(vs1, vs2, vs3);
 }
