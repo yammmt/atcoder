@@ -1,3 +1,5 @@
+// TLE もうしばらくしてから
+
 use proconio::input;
 use proconio::marker::Chars;
 
