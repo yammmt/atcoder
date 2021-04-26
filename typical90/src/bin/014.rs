@@ -1,12 +1,16 @@
-// use petgraph::unionfind::UnionFind;
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-// use permutohedron::heap_recursive;
 
 fn main() {
     input! {
+        n: usize,
+        mut an: [i64; n],
+        mut bn: [i64; n],
     }
+    an.sort_unstable();
+    bn.sort_unstable();
+    let mut ans = 0;
+    for i in 0..n {
+        ans += (an[i] - bn[i]).abs();
+    }
+    println!("{}", ans);
 }

@@ -74,7 +74,7 @@ fn main() {
             println!("  {}C{} * {}C{}", xyz.1, i, n - xyz.1, n - i - 2);
             println!("  lesser: {}", lesser);
 
-            ans += lesser * lkaijo * gkaijo;
+            // ans += lesser * lkaijo * gkaijo;
         }
     }
 

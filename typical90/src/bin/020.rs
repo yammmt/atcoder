@@ -7,6 +7,5 @@ use proconio::input;
 // use permutohedron::heap_recursive;
 
 fn main() {
-    input! {
-    }
+    input! {}
 }

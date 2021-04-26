@@ -27,14 +27,12 @@ fn main() {
 
         // 作る
         for i in 0..n {
-            cur.push(
-                if j < r.len() && r[j] == i {
-                    j += 1;
-                    '('
-                } else {
-                    ')'
-                }
-            );
+            cur.push(if j < r.len() && r[j] == i {
+                j += 1;
+                '('
+            } else {
+                ')'
+            });
         }
 
         // 正しいか判定
