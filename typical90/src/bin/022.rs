@@ -1,11 +1,20 @@
-// use petgraph::unionfind::UnionFind;
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-// use permutohedron::heap_recursive;
+
+fn gcd(a: u64, b: u64) -> u64 {
+    if b == 0 {
+        a
+    } else {
+        gcd(b, a % b)
+    }
+}
 
 fn main() {
-    input! {}
+    input! {
+        a: u64,
+        b: u64,
+        c: u64,
+    }
+
+    let g = gcd(gcd(a, b), c);
+    println!("{}", a / g - 1 + b / g - 1 + c / g - 1);
 }
