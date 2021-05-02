@@ -35,8 +35,8 @@ fn main() {
         for i in 0..n {
             ans.push(s[i + n]);
         }
-        for i in 0..n {
-            ans.push(s[i]);
+        for c in s.iter().take(n) {
+            ans.push(*c);
         }
         println!("{}", ans.iter().collect::<String>());
     }

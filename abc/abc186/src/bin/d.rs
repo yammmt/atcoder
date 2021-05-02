@@ -1,5 +1,3 @@
-// :fu: :fu:
-
 use proconio::input;
 
 fn main() {
@@ -8,12 +6,14 @@ fn main() {
         mut an: [i64; n],
     }
     an.sort_unstable();
+    an.reverse();
 
-    let mut asum = an.iter().sum::<i64>();
+    let mut cur = an.iter().sum::<i64>();
     let mut ans = 0;
-    for i in 0..n - 1 {
-        asum -= an[i];
-        ans += asum - an[i] * (n as i64 - i as i64 - 1);
+    for i in 0..n {
+        cur -= an[i];
+        ans += (n - i - 1) as i64 * an[i] - cur;
     }
+
     println!("{}", ans);
 }

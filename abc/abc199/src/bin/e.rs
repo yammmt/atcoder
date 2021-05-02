@@ -55,7 +55,7 @@ fn main() {
     // 多分超えない...
     let com = Com::new(n, 1_000_000_007);
 
-    let mut ans = 0i64;
+    // let mut ans = 0i64;
     for xyz in &xyzm {
         let mut lkaijo = 1;
         let mut gkaijo = 1;
@@ -78,5 +78,5 @@ fn main() {
         }
     }
 
-    println!("{}", ans);
+    // println!("{}", ans);
 }

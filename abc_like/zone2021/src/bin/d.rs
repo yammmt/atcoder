@@ -29,15 +29,13 @@ fn main() {
                     vdq.push_front(*c);
                 }
             }
+        } else if vdq.is_empty() {
+            vdq.push_back(*c);
         } else {
-            if vdq.is_empty() {
+            let prev = vdq.pop_back().unwrap();
+            if  *c != prev {
+                vdq.push_back(prev);
                 vdq.push_back(*c);
-            } else {
-                let prev = vdq.pop_back().unwrap();
-                if  *c != prev {
-                    vdq.push_back(prev);
-                    vdq.push_back(*c);
-                }
             }
         }
     }

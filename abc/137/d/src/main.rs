@@ -1,7 +1,3 @@
-// -*- coding:utf-8-unix -*-
-
-// :fu: Priority Queue 探す
-
 use proconio::input;
 use std::collections::BinaryHeap;
 
@@ -11,21 +7,23 @@ fn main() {
         m: usize,
         mut abn: [(usize, usize); n],
     }
-    abn.sort();
+    // 日付昇順
+    abn.sort_unstable();
 
     let mut ans = 0;
-    let mut bh = BinaryHeap::new();
+    let mut available_jobs = BinaryHeap::new();
     let mut ab_idx = 0;
-    for i in 1..m + 1 {
-        while ab_idx < n && abn[ab_idx].0 == i {
-            bh.push(abn[ab_idx].1);
+    // 最終日から順にできる範囲で単価最高の仕事
+    // ループ範囲怖い
+    for i in 1..=m {
+        while ab_idx < n && abn[ab_idx].0 <= i {
+            available_jobs.push(abn[ab_idx].1);
             ab_idx += 1;
         }
-        if bh.is_empty() {
-            continue;
-        }
 
-        ans += bh.pop().unwrap();
+        if let Some(job) = available_jobs.pop() {
+            ans += job;
+        }
     }
 
     println!("{}", ans);
