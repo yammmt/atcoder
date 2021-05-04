@@ -1,4 +1,4 @@
-// TLE/MLE なぜ
+// TLE/MLE
 
 use proconio::input;
 use std::cmp::Ordering;
@@ -46,6 +46,10 @@ fn shortest_path(adj_list: &Vec<Vec<Edge>>, start: usize) -> Vec<usize> {
             if next.cost < dist[next.position] {
                 heap.push(next);
                 dist[next.position] = next.cost;
+                // ごまかせなかった
+                if next.position == adj_list.len() {
+                    return dist;
+                }
             }
         }
     }
@@ -95,9 +99,9 @@ fn main() {
         }
     }
 
-    for g in &graph {
-        println!("{:?}", g);
-    }
+    // for g in &graph {
+    //     println!("{:?}", g);
+    // }
 
     let dist = shortest_path(&graph, 0);
     // println!("{:?}", dist);
