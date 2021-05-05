@@ -1,7 +1,7 @@
 // ワーシャルフロイドの経路復元
 
-// 最短経路が複数考えられる場合に全部考慮しないと WA っぽい
-// 例えば以下で "0" を返さねばならないらしい
+// 最短経路が複数考えられる場合に全部考慮しないと WA (問題文: "**どの** 最短経路にも")
+// 例えば以下で "0" を返さねばならない
 // 3 3
 // 1 2 1
 // 1 3 2
@@ -11,6 +11,7 @@ use proconio::input;
 
 const NOT_YET: usize = std::usize::MAX / 3;
 
+#[allow(clippy::needless_range_loop)]
 fn main() {
     input! {
         n: usize,
