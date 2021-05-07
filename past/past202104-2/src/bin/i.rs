@@ -1,4 +1,4 @@
-// :fu: :fu: :fu: :fu: :fu: 21-04 DP はどうしてかいつも死ぬ
+// 配る貰う DP
 
 use proconio::input;
 
