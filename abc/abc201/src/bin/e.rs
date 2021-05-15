@@ -14,4 +14,5 @@ use proconio::input;
 fn main() {
     input! {
     }
+    // その辺が何回パスに含まれるか求めて総和を取るのだろう
 }

@@ -1,17 +1,13 @@
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::cmp::Ordering;
-// use std::collections::BinaryHeap;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// static DUMMY: usize = std::usize::MAX / 4;
 
 fn main() {
     input! {
+        n: usize,
+        mut stn: [(String, i64); n],
     }
+    stn.sort_by(|a, b| {
+        (a.1).cmp(&b.1)
+    });
+    stn.reverse();
+    println!("{}", stn[1].0);
 }
