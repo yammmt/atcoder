@@ -31,12 +31,5 @@ fn main() {
         ans = ans.min(cur);
     }
 
-    println!(
-        "{}",
-        if ans == DUMMY {
-            -1
-        } else {
-            ans as isize
-        }
-    );
+    println!("{}", if ans == DUMMY { -1 } else { ans as isize });
 }

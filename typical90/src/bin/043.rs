@@ -54,11 +54,7 @@ fn main() {
 
             let h_u = h_i as usize;
             let w_u = w_i as usize;
-            let next_cost = if i == cur.1 {
-                cur.2
-            } else {
-                cur.2 + 1
-            };
+            let next_cost = if i == cur.1 { cur.2 } else { cur.2 + 1 };
             if shw[h_u][w_u] == '.' && next_cost < min_num[h_u][w_u][i] {
                 // (座標), 進行方向, 移動方向変更数
                 if i == cur.1 {
