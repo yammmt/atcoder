@@ -1,48 +1,34 @@
-// 数問
+// :fu: 21-06 もたつく数問 (25min)
 
 use proconio::input;
 use std::collections::HashSet;
-
-fn solve(n: i64, nn: i64) -> bool {
-    let a1 = (2 * n) / nn + 1 - nn;
-    a1 % 2 == 0
-}
 
 fn main() {
     input! {
         n: i64,
     }
 
-    if n == 0 {
-        println!("1");
-        return;
-    }
-
     let mut ans = HashSet::new();
-    let mut i = 1;
-    while i * i <= n {
-        if n % i != 0 {
-            i += 1;
-            continue;
+    let mut cur_n = 1;
+    while cur_n * cur_n <= 2 * n {
+        if 2 * n % cur_n == 0 {
+            // a * b = 2 * n
+            let a = cur_n;
+            let b = 2 * n / a;
+
+            // 項数が a
+            if (b - a + 1) % 2 == 0 {
+                ans.insert((a, (b - a + 1) / 2));
+            }
+            // 項数が b
+            if (a - b + 1) % 2 == 0 {
+                ans.insert((b, (a - b + 1) / 2));
+            }
         }
 
-        let n1 = i;
-        let n2 = n / i;
-        if solve(n, n1) {
-            ans.insert(n1);
-        }
-        if solve(n, n2) {
-            ans.insert(n2);
-        }
-        if solve(n, 2 * n1) {
-            ans.insert(2 * n1);
-        }
-        if solve(n, 2 * n2) {
-            ans.insert(2 * n2);
-        }
-
-        i += 1;
+        cur_n += 1;
     }
 
+    // println!("{:?}", ans);
     println!("{}", ans.len());
 }

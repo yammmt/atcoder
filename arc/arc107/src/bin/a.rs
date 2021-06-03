@@ -8,12 +8,12 @@ fn main() {
     }
     let d = 998_244_353;
 
-    let aa = ((1 + a) * a / 2) % d;
-    let bb = ((1 + b) * b / 2) % d;
-    let cc = ((1 + c) * c / 2) % d;
+    let asum = (a * (1 + a) / 2) % d;
+    let bsum = (b * (1 + b) / 2) % d;
+    let csum = (c * (1 + c) / 2) % d;
 
     println!(
         "{}",
-        ((aa * bb) % d * cc) % d
+        (((asum * bsum) % d) * csum) % d
     );
 }
