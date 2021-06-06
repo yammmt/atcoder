@@ -1,4 +1,4 @@
-// -*- coding:utf-8-unix -*-
+// 複雑でない境界条件 時間をかけたくない問題
 
 use proconio::input;
 
@@ -6,23 +6,22 @@ fn main() {
     input! {
         n: usize,
         k: usize,
-        x: [i64; n],
+        xn: [i64; n],
     }
 
-    let mut ans = std::i64::MAX;
+    let mut ans = std::i64::MAX / 2;
     for i in 0..n - k + 1 {
-        // println!("edge: {} {}", x[i], x[i+k-1]);
-        let dist = if x[i] * x[i + k - 1] < 0 {
-            // 異符号なら二点間の距離に小さい方から戻ってくるための小さい方の絶対値足す
-            // もしくは絶対値の小さい方に行く -> 原点に戻る -> 絶対値の大きい方に行く
-            // (x[i] - x[i + k - 1]).abs() + x[i].abs().min(x[i + k - 1].abs())
-            x[i].abs() + x[i + k - 1].abs() + x[i].abs().min(x[i + k - 1].abs())
+        // println!("{}", i);
+        let left = xn[i];
+        let right = xn[i + k - 1];
+        if left * right < 0 {
+            ans = ans.min(right - left + right.min(left.abs()));
+        } else if left < 0 {
+            ans = ans.min(left.abs());
         } else {
-            // 同符号なら遠い方に行くだけ
-            x[i].abs().max(x[i + k - 1].abs())
-        };
-        // println!("{}", dist);
-        ans = ans.min(dist);
+            ans = ans.min(right);
+        }
     }
+
     println!("{}", ans);
 }

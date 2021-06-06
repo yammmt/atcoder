@@ -1,36 +1,31 @@
-// -*- coding:utf-8-unix -*-
+// WA: インデックス
 
 use proconio::input;
+use proconio::marker::Chars;
 
 fn main() {
     input! {
         n: usize,
-        s: String,
+        s: Chars,
     }
 
-    let vc: Vec<char> = s.chars().collect();
-    let mut east_dir = (
-        vc.iter().filter(|&c| *c == 'W').count() as u32,
-        vc.iter().filter(|&c| *c == 'E').count() as u32,
-    );
-    let mut west_dir: (u32, u32) = (0, 0);
-    let mut ans = n as u32 + 1;
-    for i in 0..n {
-        let mut humans = west_dir.0 + east_dir.1;
-        if vc[i] == 'E' && east_dir.1 > 0 {
-            humans -= 1;
-        }
-        if humans < ans {
-            ans = humans;
-        }
-
-        if vc[i] == 'W' {
-            west_dir.0 += 1;
-            east_dir.0 -= 1;
+    let mut wsum = vec![0; n + 1];
+    let mut esum = vec![0; n + 1];
+    for (i, c) in s.iter().enumerate() {
+        if *c == 'W' {
+            wsum[i + 1] = wsum[i] + 1;
+            esum[i + 1] = esum[i];
         } else {
-            west_dir.1 += 1;
-            east_dir.1 -= 1;
+            wsum[i + 1] = wsum[i];
+            esum[i + 1] = esum[i] + 1;
         }
     }
+
+    let mut ans = std::usize::MAX / 3;
+    for i in 0..n {
+        // 自分より左で W + 自分より右で E
+        ans = ans.min(wsum[i] + esum[n] - esum[i + 1]);
+    }
+
     println!("{}", ans);
 }
