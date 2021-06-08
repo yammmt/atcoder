@@ -1,3 +1,10 @@
+// :fu: 21-06 水色優先
+
+// editional "注意深く整理する" の行間が読めず
+
+// floor を無視して f(t) = t + c + d / (t + 1) を微分すると (t + 1) ^ 2 = d が得られ
+// t = d.sqrt() - 1 となる 後は誤差や無視した floor を考慮して数通り試す
+
 use proconio::input;
 use std::collections::BinaryHeap;
 
@@ -21,11 +28,11 @@ fn main() {
     // cost, vertex
     heap.push((0, 0));
     while let Some(cur) = heap.pop() {
-        println!("{}", cur.1);
-        println!("  cur: {:?}", cur);
-        println!("  {:?}", heap);
+        // println!("{}", cur.1);
+        // println!("  cur: {:?}", cur);
+        // println!("  {:?}", heap);
         if dist[cur.1] != DUMMY {
-            println!("  continue");
+            // println!("  continue");
             continue;
         }
 
@@ -35,26 +42,25 @@ fn main() {
                 continue;
             }
 
-            // 待機時間 (D / (t + 1)) を線形探索したいが間に合う？
-            // TLE はさておきサンプルは合ってほしいが
-            let mut cost_d = (e.1).1 / (-cur.0 + 1);
-            let mut cur_t = -cur.0;
-            // println!("cost_d: {}", cost_d);
-            while cost_d > 1 {
-                let required_time = (e.1).1 / (cost_d - 1) - cur_t;
-                // println!("  required_time: {}", required_time);
-                if required_time <= 1 {
-                    cost_d -= 1;
-                    cur_t += required_time;
+            let mut candidates = vec![];
+            let t_f = ((e.1).1 as f64).sqrt() - 1.0;
+            for d in -1..2 {
+                let cur_t = (t_f - d as f64).ceil();
+                // println!("cur_t: {}", cur_t);
+                if cur_t >= -cur.0 as f64 {
+                    let cur_t = cur_t as isize;
+                    let cur_dist = cur_t + (e.1).0 + (e.1).1 / (cur_t + 1);
+                    candidates.push((-cur_dist, e.0));
                 } else {
-                    break;
+                    let cur_t = -cur.0;
+                    let cur_dist = cur_t + (e.1).0 + (e.1).1 / (cur_t + 1);
+                    candidates.push((-cur_dist, e.0));
                 }
             }
-            heap.push((-(cost_d + (e.1).0 - cur.0), e.0));
-            println!("  {:?}", heap);
+            heap.push(*candidates.iter().max().unwrap());
         }
     }
-    println!("{:?}", dist);
+    // println!("{:?}", dist);
 
     println!(
         "{}",

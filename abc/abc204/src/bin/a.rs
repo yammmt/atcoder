@@ -5,12 +5,5 @@ fn main() {
         x: usize,
         y: usize,
     }
-    println!(
-        "{}",
-        if x == y {
-            x
-        } else {
-            3 - x - y
-        }
-    );
+    println!("{}", if x == y { x } else { 3 - x - y });
 }
