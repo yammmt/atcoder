@@ -6,7 +6,6 @@
 // 結果として相当の重実装となってしぬ
 
 use proconio::input;
-use std::collections::BTreeSet;
 
 fn main() {
     input! {
@@ -16,48 +15,46 @@ fn main() {
     }
 
     // 愚直に全通り試すと O(NKK) で計算回数が最大 5.0x10^8 回ほどとなり微妙そう
-    // ann 最小値から順に中央値になるか見る？でも最悪パターンで計算量減るわけでもない
-    // 累積和のような見方？中央値が A 以下である場合には A 以下の数が k^2/2 個？
-    // 答えに連続性がないので二分探索ではない 多分
-    // multiset で長方形を動かせば間に合う？でも Rust で中央値を O(logN) で得る方法あったか
-    // あるいは都度ソートしようにもソートに O(K^2logK^2) かかるので苦しい
-
-    let mut ans = std::i64::MAX / 2;
-    let small_set_num = if k % 2 == 0 {
-        k * k / 2
-    } else {
-        k * k / 2 + 1
-    };
-    let mut small = BTreeSet::new();
-    let mut large = BTreeSet::new();
-    for i in 0..k {
-        for j in 0..k {
-            if small.len() < small_set_num as usize {
-                small.insert((-ann[i][j], (i, j)));
-            } else {
-                let mut small_iter = small.iter();
-                let small_largest = *(small_iter.next().unwrap());
-                if -small_largest.0 < ann[i][j] {
-                    large.insert((ann[i][j], (i, j)));
-                } else {
-                    small.remove(&small_largest);
-                    small.insert((-ann[i][j], (i, j)));
-                    large.insert((-small_largest.0, small_largest.1));
+    // k^2 個の数の中央値が A 以下である場合には A 以下の数が k^2/2 + 1 個以上
+    // あるいは A より大きい数が k^2/2 + 1 個未満
+    let mut pass = 1_000_000_000;
+    let mut fail = -1;
+    while pass - fail > 1 {
+        let mid = (pass + fail) / 2;
+        // println!("{} {} => {}", pass, fail, mid);
+        // 累積和テーブル
+        let mut cusum = vec![vec![0i64; n + 1]; n + 1];
+        for i in 0..n {
+            for j in 0..n {
+                cusum[i + 1][j + 1] = cusum[i + 1][j] + cusum[i][j + 1] - cusum[i][j];
+                if ann[i][j] > mid {
+                    cusum[i + 1][j + 1] += 1;
                 }
             }
         }
+
+        // 検討
+        let mut cleared = false;
+        'outer: for si in 0..n - k + 1 {
+            for sj in 0..n - k + 1 {
+                let gi = si + k;
+                let gj = sj + k;
+                // println!("{} {}", si, sj);
+                // println!("{} {}\n", gi, gj);
+                let over_num = cusum[gi][gj] - cusum[gi][sj] - cusum[si][gj] + cusum[si][sj];
+                if over_num < (k * k / 2 + 1) as i64 {
+                    cleared = true;
+                    break 'outer;
+                }
+            }
+        }
+
+        if cleared {
+            pass = mid;
+        } else {
+            fail = mid;
+        }
     }
-    // println!("{:?}", large);
-    // println!("{:?}", small);
-    let mut small_iter = small.iter();
-    let small_largest = *(small_iter.next().unwrap());
-    ans = ans.min(-small_largest.0);
 
-    // let mut left_up = 0;
-    // let mut next_dir = Some();
-    // while let Some(moved_to) = next_dir {
-    // }
-
-
-    println!("{}", ans);
+    println!("{}", pass);
 }
