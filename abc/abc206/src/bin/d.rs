@@ -15,13 +15,10 @@ fn main() {
     // 有効グラフを作って辺の本数, ループができたらそこから -1?
     // むしろ有向グラフ内の要素数 - 1 で十分では？
     let mut uf = UnionFind::new(ANMAX);
-    for i in 0..n / 2 {
-        uf.union(an[i], an[n - i - 1]);
-    }
+
+    (0..n / 2).for_each(|i| { uf.union(an[i], an[n - i - 1]); });
     let mut grpnum = vec![0; ANMAX];
-    for i in 0..ANMAX {
-        grpnum[uf.find(i)] += 1;
-    }
+    (0..ANMAX).for_each(|i| { grpnum[uf.find(i)] += 1; });
     // このアルゴリズムでは明らかに i32 の範疇を超えない
     let mut ans = 0usize;
     for i in 0..ANMAX {

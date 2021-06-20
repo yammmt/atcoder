@@ -1,52 +1,55 @@
 // 整数 N は 10 進数表記で 8^20 以下か質問投げたい (Yes だと思う)
+// 128bit 整数型で受ければ文字列変換の例外が発生しなくなり楽
 
 // RE: N は 8 進数表記であり入力段階で 1e19 以上となり得る
-// そもそも文字列で数値計算して茶色におさまるか？何か間違えてない？
+// WA: n = 0
 
 use proconio::input;
+use proconio::marker::Bytes;
 
 fn main() {
     input! {
-        // スマートではないが
-        mut n: u128,
+        n: Bytes,
         k: usize,
     }
 
+    let mut eight = n
+        .iter()
+        .map(|&a| (a - b'0') as usize)
+        .collect::<Vec<usize>>();
+
     for _ in 0..k {
-        // 8 -> 10
         let mut ten = 0;
-        let mut cur_eight = 1;
-        while n > 0 {
-            ten += n % 10 * cur_eight;
-            n /= 10;
-            cur_eight *= 8;
+        // 8 -> 10
+        let mut base = 1;
+        for i in 0..eight.len() {
+            ten += base * eight[eight.len() - i - 1];
+            base *= 8;
         }
-        // println!("10: {}", ten);
 
         // 10 -> 9
-        let mut nine = 0;
-        let mut cur_nine = 1;
+        let mut nine = vec![];
         while ten > 0 {
-            nine += ten % 9 * cur_nine;
+            nine.push(ten % 9);
             ten /= 9;
-            cur_nine *= 10;
         }
-        // println!(" 9: {}", nine);
+        nine.reverse();
+        if nine.is_empty() {
+            nine.push(0);
+        }
 
-        // '8' -> '5'
-        let mut eight = 0;
-        let mut cur_ten = 1;
-        while nine > 0 {
-            eight += if nine % 10 == 8 {
-                5 * cur_ten
-            } else {
-               nine % 10 * cur_ten
-            };
-            nine /= 10;
-            cur_ten *= 10;
+        // replace (-> 8)
+        eight = vec![];
+        for i in &nine {
+            eight.push(match i {
+                8 => 5,
+                _ => *i,
+            });
         }
-        n = eight;
     }
 
-    println!("{}", n);
+    for e in &eight {
+        print!("{}", e);
+    }
+    println!();
 }
