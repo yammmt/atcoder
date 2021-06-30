@@ -16,12 +16,9 @@ fn main() {
     let mut ans = 0;
     for i in 0..n {
         let mut small = 0;
-        let mut big = 0;
         for e in &edges[i] {
             if *e < i {
                 small += 1;
-            } else {
-                big += 1;
             }
         }
         if small == 1 {
