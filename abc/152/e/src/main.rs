@@ -1,12 +1,13 @@
-// -*- coding:utf-8-unix -*-
-
+// :fu: :fu: :fu: :fu: :fu: 21-07 Rust の癖で実装が苦しくなるしそもそも実装が重め
 // https://drken1215.hatenablog.com/entry/2020/01/22/071000
 
 use proconio::input;
 use std::collections::HashMap;
 
+const A_MAX: usize = 1_000_001;
+
 // n^p mod m (繰り返し二乗法)
-fn repeat_square(n: u64, p: u64, m: u64) -> u64 {
+fn repeat_square(n: usize, p: usize, m: usize) -> usize {
     if p == 0 {
         1
     } else if p == 1 {
@@ -18,63 +19,72 @@ fn repeat_square(n: u64, p: u64, m: u64) -> u64 {
     }
 }
 
-fn ninv(n: u64, p: u64) -> u64 {
+fn ninv(n: usize, p: usize) -> usize {
     repeat_square(n, p - 2, p)
 }
 
 fn main() {
     input! {
         n: usize,
-        a: [u64; n],
+        an: [usize; n],
     }
+    let d = 1_000_000_007;
 
-    if n == 1 {
-        println!("1");
-        return;
-    }
-
-    let modp = 10u64.pow(9) + 7;
-
-    let mut vprime = vec![0; 1000000];
-    for i in &a {
-        let mut chm = HashMap::new();
-        let mut n = *i;
-        let mut p = 2;
-        while n > 1 {
-            if n % p == 0 {
-                let counter = chm.entry(p).or_insert(0);
-                *counter += 1;
-                n /= p;
-            } else if p * p > n {
-                let counter = chm.entry(n).or_insert(0);
-                *counter += 1;
-                break;
-            } else {
-                p += 1;
-            }
-        }
-        for (k, v) in &chm {
-            vprime[*k as usize] = vprime[*k as usize].max(*v);
-        }
-    }
-    // println!("{:?}", vprime);
-    let mut lcm = 1;
-    for i in 0..vprime.len() {
-        if vprime[i] == 0 {
+    // 素数判定
+    let mut is_prime = vec![true; A_MAX];
+    is_prime[0] = false;
+    is_prime[1] = false;
+    for p in 0..A_MAX {
+        if !is_prime[p] {
             continue;
         }
 
-        for _ in 0..vprime[i] {
-            lcm = (lcm * i as u64) % modp;
+        let mut i = 2 * p;
+        while i < A_MAX {
+            is_prime[i] = false;
+            i += p;
         }
     }
-    // println!("lcm: {}", lcm);
+
+    // 全数の最小公倍数を素因数を保持する形で記憶する
+    let mut prime_num = vec![0; A_MAX];
+    for a in &an {
+        let mut cur = *a;
+        let mut cur_prime = HashMap::new();
+        let mut i = 2;
+        while cur > 1 && i * i <= *a {
+            if !is_prime[i] {
+                i += 1;
+                continue;
+            }
+
+            if cur % i == 0 {
+                let cnt = cur_prime.entry(i).or_insert(0);
+                *cnt += 1;
+                cur /= i;
+            } else {
+                i += 1;
+            }
+        }
+        if cur > 1 {
+            cur_prime.insert(cur, 1);
+        }
+
+        for (k, v) in &cur_prime {
+            prime_num[*k] = prime_num[*k].max(*v);
+        }
+    }
+
+    let mut lcm = 1;
+    for (i, v) in prime_num.iter().enumerate() {
+        lcm = (lcm * repeat_square(i, *v, d)) % d;
+    }
+    let lcm = lcm;
 
     let mut ans = 0;
-    for i in &a {
-        // println!("i: {}, ninv: {}", i, ninv(*i, modp));
-        ans = (ans + (lcm * ninv(*i, modp)) % modp) % modp;
-        // println!("ans: {}", ans);
+    for a in &an {
+        ans = (ans + lcm * ninv(*a, d)) % d;
     }
+
     println!("{}", ans);
 }
