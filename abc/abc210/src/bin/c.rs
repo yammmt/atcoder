@@ -9,8 +9,8 @@ fn main() {
     }
 
     let mut hm = HashMap::new();
-    for i in 0..k {
-        let cnt = hm.entry(cn[i]).or_insert(0);
+    for c in cn.iter().take(k) {
+        let cnt = hm.entry(*c).or_insert(0);
         *cnt += 1;
     }
 
@@ -18,8 +18,8 @@ fn main() {
     for i in k..n + 1 {
         // println!("{:?}", hm);
         ans = ans.max(hm.len());
-        let cnt = hm.entry(cn[i - k]).or_insert(0);
-        if cnt > &mut 1 {
+        let cnt = hm.get_mut(&cn[i - k]).unwrap();
+        if *cnt > 1 {
             *cnt -= 1;
         } else {
             hm.remove(&cn[i - k]);

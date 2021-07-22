@@ -8,12 +8,5 @@ fn main() {
         y: i32,
     }
 
-    println!(
-        "{}",
-        if n <= a {
-            n * x
-        } else {
-            a * x + (n - a) * y
-        }
-    );
+    println!("{}", if n <= a { n * x } else { a * x + (n - a) * y });
 }

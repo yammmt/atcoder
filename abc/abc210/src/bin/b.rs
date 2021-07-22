@@ -9,14 +9,7 @@ fn main() {
 
     for (i, c) in s.iter().enumerate() {
         if *c == '1' {
-            println!(
-                "{}",
-                if i % 2 == 0 {
-                    "Takahashi"
-                } else {
-                    "Aoki"
-                }
-            );
+            println!("{}", if i % 2 == 0 { "Takahashi" } else { "Aoki" });
             return;
         }
     }
