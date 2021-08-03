@@ -1,5 +1,3 @@
-// :fu: :fu:
-
 use proconio::input;
 
 fn main() {
@@ -8,13 +6,13 @@ fn main() {
         mut cn: [u64; n],
     }
     let d = 1_000_000_007;
-    cn.sort();
+    cn.sort_unstable();
 
-    let mut ans = 1u64;
+    let mut ans = 1;
     for (i, c) in cn.iter().enumerate() {
-        if i as u64 + 1 > *c {
-            println!("0");
-            return;
+        if i as u64 >= *c {
+            ans = 0;
+            break;
         }
 
         ans = (ans * (*c - i as u64)) % d;

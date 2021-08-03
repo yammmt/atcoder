@@ -29,12 +29,5 @@ fn main() {
 
     let mut rvn = vn.clone();
     rvn.reverse();
-    println!(
-        "{}",
-        if vn == rvn {
-            "Yes"
-        } else {
-            "No"
-        }
-    );
+    println!("{}", if vn == rvn { "Yes" } else { "No" });
 }

@@ -1,90 +1,77 @@
 // :fu: :fu: :fu: 21-04 実装が重い
 // Rust の permutation/clojure の仕様で詰んだしオーバーフロー見落として泥沼
 
+use itertools::Itertools;
 use proconio::input;
-use permutohedron::heap_recursive;
+use proconio::marker::Chars;
+use std::collections::HashMap;
 
-fn solve(s1: Vec<char>, s2: Vec<char>, s3: Vec<char>) {
-    let mut appeared = vec![false; 26];
-    for s in &s1 {
-        appeared[(*s as u8 - b'a') as usize] = true;
+fn main() {
+    input! {
+        mut s3: [Chars; 3],
     }
-    for s in &s2 {
-        appeared[(*s as u8 - b'a') as usize] = true;
-    }
+    s3.iter_mut().for_each(|s| s.reverse());
+
+    let mut abc = vec![];
     for s in &s3 {
-        appeared[(*s as u8 - b'a') as usize] = true;
+        for c in s {
+            abc.push(*c);
+        }
     }
-    let char_kinds = appeared.iter().filter(|&t| *t).count();
-    if char_kinds > 10 {
+    abc.sort_unstable();
+    abc.dedup();
+    if abc.len() > 10 || s3[0].len().max(s3[1].len()) > s3[2].len() {
         println!("UNSOLVABLE");
         return;
     }
 
-    let mut cleared = false;
-    let mut data = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    heap_recursive(&mut data, |p| {
-        if !cleared {
-            let mut char_to_num = vec![999i64; 26];
-            let mut ci = 0;
-            for nn in p {
-                while ci < 26 && !appeared[ci] {
-                    ci += 1;
-                }
-                if ci == 26 {
-                    break;
-                }
-
-                char_to_num[ci] = *nn;
-                ci += 1;
-            }
-            // println!("{:?}", char_to_num);
-
-            // 先頭 0 は省く
-            if  char_to_num[(s1[0] as u8 - b'a') as usize] != 0
-                && char_to_num[(s2[0] as u8 - b'a') as usize] != 0
-                && char_to_num[(s3[0] as u8 - b'a') as usize] != 0
-            {
-                let mut s1_new = 0;
-                let mut s2_new = 0;
-                let mut s3_new = 0;
-                for s in &s1 {
-                    s1_new *= 10;
-                    s1_new += char_to_num[(*s as u8 - b'a') as usize];
-                }
-                for s in &s2 {
-                    s2_new *= 10;
-                    s2_new += char_to_num[(*s as u8 - b'a') as usize];
-                }
-                for s in &s3 {
-                    s3_new *= 10;
-                    s3_new += char_to_num[(*s as u8 - b'a') as usize];
-                }
-
-                if s1_new + s2_new == s3_new {
-                    println!("{}", s1_new);
-                    println!("{}", s2_new);
-                    println!("{}", s3_new);
-                    cleared = true;
-                    // return; // できない
-                }
-            }
+    for perm in (0..10).permutations(abc.len()) {
+        let mut hm = HashMap::new();
+        for i in 0..abc.len() {
+            hm.insert(abc[i], perm[i]);
         }
-    });
 
-    if !cleared {
-        println!("UNSOLVABLE");
-    }
-}
+        // 先頭 0 は拒否
+        if *hm.get(&s3[0][s3[0].len() - 1]).unwrap() == 0
+            || *hm.get(&s3[1][s3[1].len() - 1]).unwrap() == 0
+            || *hm.get(&s3[2][s3[2].len() - 1]).unwrap() == 0
+        {
+            continue;
+        }
 
-fn main() {
-    input! {
-        s1: String,
-        s2: String,
-        s3: String,
+        let mut pass = true;
+        let mut add_one = 0;
+        for i in 0..s3[2].len() {
+            let n0 = if i < s3[0].len() {
+                *hm.get(&s3[0][i]).unwrap()
+            } else {
+                0
+            };
+            let n1 = if i < s3[1].len() {
+                *hm.get(&s3[1][i]).unwrap()
+            } else {
+                0
+            };
+            let n2 = *hm.get(&s3[2][i]).unwrap();
+            let added = n0 + n1 + add_one;
+            if added % 10 != n2 {
+                pass = false;
+                break;
+            }
+            add_one = added / 10;
+        }
+
+        if pass && add_one == 0 {
+            s3.iter_mut().for_each(|s| s.reverse());
+            for s in &s3 {
+                for c in s {
+                    print!("{}", hm.get(c).unwrap());
+                }
+                println!();
+            }
+            return;
+        }
     }
-    let vs1 = s1.chars().collect::<Vec<char>>();
-    let vs2 = s2.chars().collect::<Vec<char>>();
-    let vs3 = s3.chars().collect::<Vec<char>>();
-    solve(vs1, vs2, vs3);
+
+    println!("UNSOLVABLE");
 }
