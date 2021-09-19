@@ -1,17 +1,21 @@
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::cmp::Ordering;
-// use std::collections::BinaryHeap;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// static DUMMY: usize = std::usize::MAX / 4;
+use proconio::marker::Chars;
 
 fn main() {
     input! {
+        s3: [String; 3],
+        t: Chars,
     }
+    for tt in &t {
+        print!(
+            "{}",
+            match *tt {
+                '1' => &s3[0],
+                '2' => &s3[1],
+                '3' => &s3[2],
+                _ => unreachable!(),
+            }
+        );
+    }
+    println!();
 }
