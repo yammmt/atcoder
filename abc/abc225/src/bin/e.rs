@@ -1,21 +1,13 @@
-// デバッグ詰み
+// WA: 浮動小数点数誤差と幾何
 
-// 誤差が重いが editorial は誤差への言及が見えないのは慈悲がない (放送にはある)
+// 誤差が重いが editorial は誤差への言及が見えない (放送にはある) (E 解く層には不要？)
 // オペレータ定義でなく比較関数定義になる言語はないものか
 
 use proconio::input;
 use std::cmp::Ordering;
 
 fn cmp_a(a: (i64, i64), b: (i64, i64)) -> std::cmp::Ordering {
-    if a.0 == 0 && b.0 == 0 {
-        Ordering::Equal
-    } else if a.0 == 0 {
-        Ordering::Greater
-    } else if b.0 == 0 {
-        Ordering::Less
-    } else {
-        (a.1 * b.0).cmp(&(b.1 * a.0))
-    }
+    (a.1 * b.0).cmp(&(b.1 * a.0))
 }
 
 fn main() {
@@ -32,7 +24,9 @@ fn main() {
     xyn.sort_unstable_by(|a, b| { cmp_a((a.0 - 1, a.1), (b.0 - 1, b.1)) });
 
     let mut ans = 0;
-    let mut last = (0, -1);
+    // 傾き最小値の初期設定が (0, -1) では通らない. 実際に "フ" を書いてみればわかるが,
+    // これでは y = x の線が引かれてしまうので傾き 1 未満の点に対して誤判定となる
+    let mut last = (1, -1);
     for xy in &xyn {
         if cmp_a((xy.0, xy.1 - 1), (last.0 - 1, last.1)) != Ordering::Less {
             last = *xy;
