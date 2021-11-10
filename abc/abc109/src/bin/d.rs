@@ -1,59 +1,55 @@
-// :fu:
-
 use proconio::input;
 
 fn main() {
     input! {
         h: usize,
         w: usize,
-        ahw: [[i8; w]; h],
+        ahw: [[usize; w]; h],
     }
 
+    // 一筆書きして奇数コインを運ぶ (最短手数である必要はない)
     let mut ans = vec![];
-    let mut cans = vec![];
-    let mut h_idx = 0;
-    let mut w_idx = 0;
-    let mut w_increasing = true;
-    while h_idx < h {
-        match ahw[h_idx][w_idx] % 2 {
-            0 => {
-                if !cans.is_empty() {
-                    cans.push((h_idx, w_idx));
-                }
-            },
-            _ => {
-                cans.push((h_idx, w_idx));
-                if cans.len() > 1 {
-                    for a in 1..cans.len() {
-                        ans.push(format!("{} {} {} {}", cans[a - 1].0 + 1, cans[a - 1].1 + 1, cans[a].0 + 1, cans[a].1 + 1));
+    let mut reverse_order = false;
+    let mut moved_from = None;
+    for i in 0..h {
+        if reverse_order {
+            for j in (0..w).rev() {
+                if moved_from.is_none() {
+                    if ahw[i][j] % 2 == 1 {
+                        moved_from = Some((i, j));
                     }
-                    cans.clear();
+                } else {
+                    let prev = moved_from.unwrap();
+                    ans.push((prev.0 + 1, prev.1 + 1, i + 1, j + 1));
+                    moved_from = if ahw[i][j] % 2 == 1 {
+                        None
+                    } else {
+                        Some((i, j))
+                    };
+                }
+            }
+        } else {
+            for j in 0..w {
+                if moved_from.is_none() {
+                    if ahw[i][j] % 2 == 1 {
+                        moved_from = Some((i, j));
+                    }
+                } else {
+                    let prev = moved_from.unwrap();
+                    ans.push((prev.0 + 1, prev.1 + 1, i + 1, j + 1));
+                    moved_from = if ahw[i][j] % 2 == 1 {
+                        None
+                    } else {
+                        Some((i, j))
+                    };
                 }
             }
         }
-
-        match w_increasing {
-            true => {
-                if w_idx == w - 1 {
-                    w_increasing = false;
-                    h_idx += 1;
-                } else {
-                    w_idx += 1;
-                }
-            },
-            false => {
-                if w_idx == 0 {
-                    w_increasing = true;
-                    h_idx += 1;
-                } else {
-                    w_idx -= 1;
-                }
-            }
-        }
+        reverse_order = !reverse_order;
     }
 
     println!("{}", ans.len());
     for a in &ans {
-        println!("{}", a);
+        println!("{} {} {} {}", a.0, a.1, a.2, a.3);
     }
 }
