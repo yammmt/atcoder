@@ -1,9 +1,9 @@
 // https://scrapbox.io/procon-kirokuyou/diverta2019-2_C_-_Successive_Subtraction_(500)
-// :fu: :fu:
-// 考察段階で場合分けさせる数問 最も苦手な組み合わせ
+// 34min 教育的
+// WA: 教育
+// TODO: 処理をまとめて書く
 
 use proconio::input;
-use std::collections::VecDeque;
 
 fn main() {
     input! {
@@ -12,40 +12,42 @@ fn main() {
     }
     an.sort_unstable();
 
-    // `vec` で正位置取ろうとすると符号が片方だけだった場合に幅がめんどくさくなる
-    let mut posi = VecDeque::new();
-    let mut nega = VecDeque::new();
-    for a in &an {
-        if *a < 0 {
-            nega.push_back(*a);
-        } else {
-            posi.push_back(*a);
+    let mut ans_row = vec![];
+    if an[1] >= 0 {
+        // 負の数が一つ以下ならばひたすらマイナスに振り切って最後に y としてプラス側にもっていく
+        let mut cur = an[0];
+        for i in 1..n - 1 {
+            ans_row.push((cur, an[i]));
+            cur -= an[i];
         }
+        ans_row.push((*an.last().unwrap(), cur));
+        let ans_num = *an.last().unwrap() - cur;
+        println!("{}", ans_num);
+    } else {
+        // 負の数が二つ以上ならば二つ目以降の負の数は最も大きい数に足していく (y として選ぶ)
+        let mut cur = *an.last().unwrap();
+        let mut idx = 1;
+        while idx < n - 1 && an[idx] < 0 {
+            ans_row.push((cur, an[idx]));
+            cur -= an[idx];
+            idx += 1;
+        }
+        let last_x = cur;
+
+        // 正の数は引いていく
+        let mut cur = an[0];
+        while idx < n - 1 {
+            ans_row.push((cur, an[idx]));
+            cur -= an[idx];
+            idx += 1;
+        }
+        let last_y = cur;
+
+        ans_row.push((last_x, last_y));
+        println!("{}", last_x - last_y);
     }
 
-    if nega.is_empty() {
-        nega.push_back(posi.pop_front().unwrap());
-    } else if posi.is_empty() {
-        posi.push_back(nega.pop_back().unwrap());
-    }
-    let mut nega_min = nega.pop_front().unwrap();
-    let mut posi_max = posi.pop_back().unwrap();
-
-    let mut ans_op = vec![];
-    // 負方向に伸ばす
-    while let Some(cur) = posi.pop_front() {
-        ans_op.push((nega_min, cur));
-        nega_min -= cur;
-    }
-    // 正方向に伸ばす
-    while let Some(cur) = nega.pop_front() {
-        ans_op.push((posi_max, cur));
-        posi_max -= cur;
-    }
-
-    println!("{}", posi_max - nega_min);
-    ans_op.push((posi_max, nega_min));
-    for s in &ans_op {
-        println!("{} {}", s.0, s.1);
+    for a in &ans_row {
+        println!("{} {}", a.0, a.1);
     }
 }
