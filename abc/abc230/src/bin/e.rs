@@ -1,4 +1,6 @@
-// :fu: :fu: :fu: 21-12 数問 とても嫌い こんなん ABC では青 Diff
+// :fu: :fu: :fu: :fu: :fu: 21-12 数問 とても嫌い 解説の行間で詰み
+// https://twitter.com/kyopro_friends/status/1466766241839075328/photo/1
+// サンプルはエッジケースなりうるものを含んでおり親切
 
 use proconio::input;
 
@@ -7,27 +9,30 @@ fn main() {
         n: u64,
     }
 
-    // 答えが 1    になる => 分母が N / 2 より大きい
-    // 答えが 2 以下になる => 分母が N / 3 より大きい
-    // 答えが x 以下になる => 分母が N / (x + 1) より大きい
-    // が, これで数えると分母を 2 から N / 2 まで試して TLE
-
-    // 制約より約数列挙らしき雰囲気がある
-    // 2^40 > 10^12 より N の約数の個数は最大で 40 個程度
-    // だが足す値は約数以外でも変わる場合があり高速に計算できず (ex. n = 10)
-
     let mut ans = 0;
-    let mut already_counted = 0u64;
-    for i in 2..n + 1 {
-        println!("i: {}", i);
-        if i * i > n {
-            // 残り全部を 1 として足す？
-            break;
+    let mut i = 1;
+
+    // 愚直に数え上げる
+    // n / i = j
+    while i * i <= n {
+        ans += n / i;
+        i += 1;
+    }
+    // println!("i: {}", i);
+    // println!("  ans: {}", ans);
+
+    // 答えが j となる数はいくつあるか
+    // n / j = i
+    for j in 1..i {
+        if j == n / j {
+            // j * j == n では WA (ex. n = 10, j = 3)
+            // println!("continue: {}", j);
+            continue;
         }
-        let no_more_than = (n + i - 1) / i;
-        ans += (i - 1) * (no_more_than - already_counted);
-        already_counted += no_more_than;
-        println!("  ans: {}", ans);
+
+        // println!("j: {}", j);
+        // println!("  ans += {}", j * (n / j - n / (j + 1)));
+        ans += j * (n / j - n / (j + 1));
     }
 
     println!("{}", ans);
