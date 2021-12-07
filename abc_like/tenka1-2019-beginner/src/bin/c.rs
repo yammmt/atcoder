@@ -7,27 +7,22 @@ fn main() {
         s: Chars,
     }
 
-    let mut black_num_left = vec![0; n];
-    let mut cur = 0;
-    for i in 0..n {
-        black_num_left[i] = cur;
+    // '.': white, '#': black
+    let mut left_black = 0;
+    let mut right_white = s.iter().filter(|&c| *c == '.').count();
+
+    let mut ans = n + 1;
+    // i 文字目より左をすべて白に, i 文字目以降をすべて黒に
+    for (i, c) in s.iter().enumerate() {
+        ans = ans.min(left_black + right_white);
         if s[i] == '#' {
-            cur += 1;
+            left_black += 1;
         }
-    }
-
-    let mut white_num_right = vec![0; n];
-    let mut cur = 0;
-    for i in (0..n).rev() {
-        white_num_right[i] = cur;
         if s[i] == '.' {
-            cur += 1;
+            right_white -= 1;
         }
     }
+    ans = ans.min(left_black + right_white);
 
-    let mut ans = n;
-    for i in 0..n {
-        ans = ans.min(black_num_left[i] + white_num_right[i]);
-    }
     println!("{}", ans);
 }

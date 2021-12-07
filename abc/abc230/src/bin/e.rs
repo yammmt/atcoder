@@ -10,29 +10,41 @@ fn main() {
     }
 
     let mut ans = 0;
+    // let mut i = 1;
+
+    // // 愚直に数え上げる
+    // // n / i = j
+    // while i * i <= n {
+    //     ans += n / i;
+    //     i += 1;
+    // }
+    // // println!("i: {}", i);
+    // // println!("  ans: {}", ans);
+
+    // // 答えが j となる数はいくつあるか
+    // // n / j = i
+    // for j in 1..i {
+    //     if j == n / j {
+    //         // j * j == n では WA (ex. n = 10, j = 3)
+    //         // println!("continue: {}", j);
+    //         continue;
+    //     }
+
+    //     // println!("j: {}", j);
+    //     // println!("  ans += {}", j * (n / j - n / (j + 1)));
+    //     ans += j * (n / j - n / (j + 1));
+    // }
+
     let mut i = 1;
-
-    // 愚直に数え上げる
-    // n / i = j
-    while i * i <= n {
-        ans += n / i;
-        i += 1;
-    }
-    // println!("i: {}", i);
-    // println!("  ans: {}", ans);
-
-    // 答えが j となる数はいくつあるか
-    // n / j = i
-    for j in 1..i {
-        if j == n / j {
-            // j * j == n では WA (ex. n = 10, j = 3)
-            // println!("continue: {}", j);
-            continue;
-        }
-
-        // println!("j: {}", j);
-        // println!("  ans += {}", j * (n / j - n / (j + 1)));
-        ans += j * (n / j - n / (j + 1));
+    while i <= n {
+        let x = n / i;
+        let ni = n / x + 1;
+        println!("i: {}", i);
+        println!("x: {}", x);
+        println!("ni: {}", ni);
+        println!();
+        ans += x * (ni - i);
+        i = ni;
     }
 
     println!("{}", ans);
