@@ -1,4 +1,4 @@
-// :fu: 21-06 もたつく数問 (25min)
+// もたつく数問 (25min -> 14min)
 
 use proconio::input;
 use std::collections::HashSet;
@@ -8,27 +8,27 @@ fn main() {
         n: i64,
     }
 
-    let mut ans = HashSet::new();
-    let mut cur_n = 1;
-    while cur_n * cur_n <= 2 * n {
-        if 2 * n % cur_n == 0 {
-            // a * b = 2 * n
-            let a = cur_n;
-            let b = 2 * n / a;
-
-            // 項数が a
-            if (b - a + 1) % 2 == 0 {
-                ans.insert((a, (b - a + 1) / 2));
-            }
-            // 項数が b
-            if (a - b + 1) % 2 == 0 {
-                ans.insert((b, (a - b + 1) / 2));
-            }
+    // 約数列挙
+    let mut divisors = HashSet::new();
+    let mut cur_i = 1;
+    while cur_i * cur_i <= 2 * n {
+        if 2 * n % cur_i == 0 {
+            divisors.insert(cur_i);
+            divisors.insert(2 * n / cur_i);
         }
+        cur_i += 1;
+    }
+    // println!("{:?}", divisors);
 
-        cur_n += 1;
+    let mut ans = 0;
+    // 等差数列の長さを m
+    for m in &divisors {
+        // println!("m: {}", m);
+        if (2 * n / m - m + 1) % 2 == 0 {
+            // println!(" += 1");
+            ans += 1;
+        }
     }
 
-    // println!("{:?}", ans);
-    println!("{}", ans.len());
+    println!("{}", ans);
 }
