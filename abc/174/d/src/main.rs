@@ -4,8 +4,11 @@ use proconio::marker::Chars;
 fn main() {
     input! {
         _n: u32,
-        c: Chars,
+        cn: Chars,
     }
-    let red_num = c.iter().filter(|&s| *s == 'R').count();
-    println!("{}", c.iter().take(red_num).filter(|&s| *s == 'W').count());
+
+    // 左側に赤い石を固める
+    let reds = cn.iter().filter(|&c| *c == 'R').count();
+    let ans = cn.iter().take(reds).filter(|&c| *c == 'W').count();
+    println!("{}", ans);
 }

@@ -8,20 +8,20 @@ fn main() {
         k: u64,
     }
 
-    let mut ans = 1;
     let mut seven = 7;
-    let mut appear_set = HashSet::new();
-    loop {
-        let cur = seven % k;
-        if cur == 0 {
-            println!("{}", ans);
-            return;
-        } else if appear_set.contains(&cur) {
-            println!("-1");
+    let mut idx = 1;
+    let mut appeared = HashSet::new();
+    while !appeared.contains(&seven) {
+        if seven % k == 0 {
+            println!("{}", idx);
             return;
         }
-        appear_set.insert(cur);
-        seven = cur * 10 + 7;
-        ans += 1;
+
+        appeared.insert(seven);
+        seven = 10 * seven + 7;
+        seven %= k;
+        idx += 1;
     }
+
+    println!("-1");
 }

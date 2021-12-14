@@ -7,9 +7,11 @@ fn sample1() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"4
+        .output_with_stdin(
+            r#"4
 2 2 1 3
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "7\n");
@@ -21,9 +23,11 @@ fn sample2() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"7
+        .output_with_stdin(
+            r#"7
 1 1 1 1 1 1 1
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "6\n");

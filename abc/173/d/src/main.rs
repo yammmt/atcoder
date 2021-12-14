@@ -1,19 +1,16 @@
-// -*- coding:utf-8-unix -*-
-
 use proconio::input;
 
 fn main() {
     input! {
         n: usize,
-        mut a: [u64; n],
+        mut an: [u64; n],
     }
 
-    a.sort();
-    a.reverse();
-    let mut ans = a.iter().take(n / 2).map(|&a| 2 * a).sum::<u64>();
-    ans -= a[0];
-    if n % 2 == 1 {
-        ans += a[n / 2];
-    }
+    // 先頭を一度, 以後若い順に二度ずつ値を足していく (貪欲)
+    an.sort_unstable();
+    an.reverse();
+    let mut ans = 0;
+    (0..n - 1).for_each(|i| ans += an[(i + 1) / 2]);
+
     println!("{}", ans);
 }
