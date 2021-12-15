@@ -1,49 +1,63 @@
-// -*- coding:utf-8-unix -*-
-
 use proconio::input;
 
-// n^p mod m (繰り返し二乗法)
-fn repeat_square(n: u64, p: u64, m: u64) -> u64 {
-    if p == 0 {
-        1
-    } else if p == 1 {
-        n % m
-    } else if p % 2 == 0 {
-        repeat_square(n, p / 2, m).pow(2) % m
-    } else {
-        (n * repeat_square(n, p - 1, m)) % m
-    }
+#[derive(Debug)]
+struct Com {
+    fac: Vec<i64>,
+    finv: Vec<i64>,
+    inv: Vec<i64>,
+    n_max: usize,
+    mod_base: i64,
 }
 
-fn ncr_mod(n: u64, r: u64, m: u64) -> u64 {
-    let mut denominator = n;
-    let mut numerator = 1;
-    for i in 1..r {
-        denominator = (denominator * (n - i)) % m;
-        numerator = (numerator * (i + 1)) % m;
+impl Com {
+    fn new(n: usize, m: i64) -> Self {
+        let mut com = Com {
+            fac: vec![0; n + 1],
+            inv: vec![0; n + 1],
+            finv: vec![0; n + 1],
+            n_max: n,
+            mod_base: m,
+        };
+
+        com.fac[0] = 1;
+        com.fac[1] = 1;
+        com.inv[1] = 1;
+        com.finv[0] = 1;
+        com.finv[1] = 1;
+
+        for i in 2..n + 1 {
+            com.fac[i] = com.fac[i - 1] * i as i64 % com.mod_base;
+            com.inv[i] = com.mod_base
+                - com.inv[com.mod_base as usize % i] * (com.mod_base / i as i64) % com.mod_base;
+            com.finv[i] = com.finv[i - 1] * com.inv[i] % com.mod_base;
+        }
+
+        com
     }
-    (denominator * repeat_square(numerator, m - 2, m)) % m
+
+    // nCk mod m
+    fn com(&self, n: usize, k: usize) -> i64 {
+        if n < k {
+            return 0;
+        }
+
+        self.fac[n] * (self.finv[k] * self.finv[n - k] % self.mod_base) % self.mod_base
+    }
 }
 
 fn main() {
     input! {
-        s: u64,
+        s: usize,
     }
+    let d = 1_000_000_007;
+    let com = Com::new(s, d);
 
-    let divisor = 10_u64.pow(9) + 7;
     let mut ans = 0;
-    // 項の数が i (すべての項は 3 以上)
-    for i in 1..s {
-        if 3 * i > s {
-            break;
-        } else if 3 * i == s {
-            ans += 1;
-            break;
-        }
-
-        let needed = s - (3 * i);
-        ans += ncr_mod(i + needed - 1, needed, divisor);
-        ans = ans % divisor;
+    // 数列の長さを i
+    for i in 1..s / 3 + 1 {
+        let distributed = s - 3 * i;
+        ans = (ans + com.com(distributed + i - 1, i - 1)) % d;
     }
+
     println!("{}", ans);
 }

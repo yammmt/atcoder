@@ -1,5 +1,3 @@
-// -*- coding:utf-8-unix -*-
-
 use petgraph::unionfind::UnionFind;
 use proconio::input;
 
@@ -10,13 +8,13 @@ fn main() {
         abm: [(usize, usize); m],
     }
 
-    let mut uf = UnionFind::new(n + 1);
+    let mut uf = UnionFind::new(n);
     abm.iter().for_each(|ab| {
-        uf.union(ab.0, ab.1);
+        uf.union(ab.0 - 1, ab.1 - 1);
     });
 
-    let mut grpnum = vec![0; n + 1];
-    (1..n + 1).for_each(|i| grpnum[uf.find(i)] += 1);
+    let mut membernum = vec![0; n];
+    (0..n).for_each(|i| membernum[uf.find(i)] += 1);
 
-    println!("{}", grpnum.iter().max().unwrap());
+    println!("{}", membernum.iter().max().unwrap());
 }

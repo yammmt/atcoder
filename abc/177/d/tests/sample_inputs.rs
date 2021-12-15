@@ -7,11 +7,13 @@ fn sample1() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"5 3
+        .output_with_stdin(
+            r#"5 3
 1 2
 3 4
 5 1
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "3\n");
@@ -23,7 +25,8 @@ fn sample2() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"4 10
+        .output_with_stdin(
+            r#"4 10
 1 2
 2 1
 1 2
@@ -34,7 +37,8 @@ fn sample2() {
 2 3
 2 4
 3 4
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "4\n");
@@ -46,12 +50,14 @@ fn sample3() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"10 4
+        .output_with_stdin(
+            r#"10 4
 3 1
 4 1
 5 9
 2 6
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "3\n");
@@ -63,10 +69,12 @@ fn sample4() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"3 2
+        .output_with_stdin(
+            r#"3 2
 1 2
 2 3
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "3\n");
@@ -78,11 +86,13 @@ fn sample5() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"3 3
+        .output_with_stdin(
+            r#"3 3
 1 2
 2 3
 2 3
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "3\n");
@@ -94,9 +104,11 @@ fn sample6() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"30 1
+        .output_with_stdin(
+            r#"30 1
 2 3
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "2\n");
@@ -108,10 +120,12 @@ fn sample7() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"30 2
+        .output_with_stdin(
+            r#"30 2
 2 3
 3 29
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "3\n");
@@ -123,11 +137,13 @@ fn sample8() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"30 3
+        .output_with_stdin(
+            r#"30 3
 2 3
 3 29
 28 30
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "3\n");
@@ -139,12 +155,14 @@ fn sample9() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"5 4
+        .output_with_stdin(
+            r#"5 4
 1 2
 2 3
 1 4
 5 4
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "5\n");
@@ -156,12 +174,14 @@ fn sample10() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"5 4
+        .output_with_stdin(
+            r#"5 4
 1 2
 3 4
 5 1
 5 3
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "5\n");
@@ -173,13 +193,15 @@ fn sample11() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"6 5
+        .output_with_stdin(
+            r#"6 5
 1 2
 3 4
 1 5
 5 3
 4 6
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "6\n");
@@ -191,7 +213,8 @@ fn sample12() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"8 8
+        .output_with_stdin(
+            r#"8 8
 1 2
 3 4
 1 5
@@ -200,7 +223,8 @@ fn sample12() {
 8 7
 7 8
 7 4
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "8\n");
@@ -212,7 +236,8 @@ fn sample13() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"11 11
+        .output_with_stdin(
+            r#"11 11
 1 2
 3 4
 1 5
@@ -224,7 +249,8 @@ fn sample13() {
 9 10
 10 11
 11 5
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "11\n");
@@ -236,7 +262,8 @@ fn sample14() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"12 11
+        .output_with_stdin(
+            r#"12 11
 1 2
 3 4
 1 5
@@ -248,7 +275,8 @@ fn sample14() {
 9 10
 10 11
 5 11
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "11\n");
@@ -260,14 +288,16 @@ fn sample15() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"15 6
+        .output_with_stdin(
+            r#"15 6
 1 2
 3 4
 1 4
 11 5
 5 7
 7 3
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "7\n");
@@ -279,7 +309,8 @@ fn sample16() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"20 17
+        .output_with_stdin(
+            r#"20 17
 1 2
 3 4
 1 5
@@ -297,7 +328,8 @@ fn sample16() {
 9 19
 19 18
 2 15
-"#)
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "15\n");
@@ -309,8 +341,10 @@ fn sample17() {
     let testdir = TestDir::new(BIN, "");
     let output = testdir
         .cmd()
-        .output_with_stdin(r#"5 0
-"#)
+        .output_with_stdin(
+            r#"5 0
+"#,
+        )
         .tee_output()
         .expect_success();
     assert_eq!(output.stdout_str(), "1\n");

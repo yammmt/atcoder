@@ -1,35 +1,27 @@
-// -*- coding:utf-8-unix -*-
-
 use proconio::input;
-
-// n^p mod m (繰り返し二乗法)
-fn repeat_square(n: u64, p: u64, m: u64) -> u64 {
-    if p == 0 {
-        1
-    } else if p == 1 {
-        n % m
-    } else if p % 2 == 0 {
-        repeat_square(n, p / 2, m).pow(2) % m
-    } else {
-        (n * repeat_square(n, p - 1, m)) % m
-    }
-}
 
 fn main() {
     input! {
         n: u64,
     }
-    if n == 1 {
-        println!("0");
-        return;
-    }
+    let d = 1_000_000_007;
 
-    let divisor = 10_u64.pow(9) + 7;
-    let ten = repeat_square(10, n, divisor);
-    let nine = repeat_square(9, n, divisor);
-    let eight = repeat_square(8, n, divisor);
-    // println!("{} {}", nine, eight);
-    let hiku = (((2 * nine) % divisor) + divisor - eight) % divisor;
-    let ans = (ten + divisor - hiku) % divisor;
+    // すべての数列の個数: 10^N
+    // 0/9 を **どちらも** 含まない数列の個数: 8^N
+    // 0/9 のどちらか片方のみを含む数列の個数: 9^N - 8^N
+    // ans: 10^N - 8^N - 2*(9^N-8^N)
+    let mut ten_n = 1u64;
+    let mut eight_n = 1u64;
+    let mut nine_n = 1u64;
+    for _ in 0..n {
+        ten_n = (ten_n * 10) % d;
+        eight_n = (eight_n * 8) % d;
+        nine_n = (nine_n * 9) % d;
+    }
+    let mut ans = ten_n;
+    ans = ((ans + d) - eight_n) % d;
+    ans = ((ans + d) - (nine_n + d - eight_n) % d) % d;
+    ans = ((ans + d) - (nine_n + d - eight_n) % d) % d;
+
     println!("{}", ans);
 }
