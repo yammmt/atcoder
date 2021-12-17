@@ -1,29 +1,26 @@
-// -*- coding:utf-8-unix -*-
-
+// :fu: :fu: 21-12 数問として O(1) で解いた場合の式が合わない
 // https://atcoder.jp/contests/abc180/editorial/219
 
 use proconio::input;
 
 fn main() {
     input! {
-        x: u64,
-        y: u64,
-        a: u64,
-        b: u64,
+        x: u128,
+        y: u128,
+        a: u128,
+        b: u128,
     }
 
-    let mut pts = (x, 0u64);
-    loop {
-        // `pts.0 * a` は前者が最大 10^18, 後者が 10^9 で
-        // `std::u64::MAX` が 18_446_744_073_709_551_615 (10^19) であるため
-        // 愚直に比較するとオーバーフローで判定に引っ掛からないで無限ループする
-        if pts.0 >= y / a || pts.0 * a >= pts.0 + b {
-            break;
-        }
+    // let a_num = b / ((a - 1) * a * x);
+    // let strength = x * a_num * a;
+    // let exp = a_num;
 
-        pts.0 *= a;
-        pts.1 += 1;
+    let mut strength = x.min(y);
+    let mut exp = 0;
+    while strength * a < y && strength * a < strength + b {
+        strength *= a;
+        exp += 1;
     }
-    // println!("{:?}", pts);
-    println!("{}", pts.1 + (y - 1 - pts.0) / b);
+
+    println!("{}", exp + (y - 1 - strength) / b);
 }
