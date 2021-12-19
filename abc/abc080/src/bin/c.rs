@@ -1,34 +1,41 @@
-use proconio::input;
-// use std::collections::HashSet;
+// 12min 日本語
 
+use proconio::input;
+
+#[allow(clippy::needless_range_loop)]
 fn main() {
     input! {
         n: usize,
-        fnn: [[i64; 10]; n],
-        pn: [[i64; 11]; n],
+        fn10: [[usize; 10]; n],
+        pn11: [[i64; 11]; n],
     }
-    // println!("{:?}", pn);
 
-    let mut ans = std::i64::MIN;
-    for bit_row in 1..2u32.pow(10u32) {
-        let mut opened = vec![];
-        for i in 0..10 {
-            if bit_row & (1 << i) > 0 {
-                opened.push(i);
+    let mut ans = std::i64::MIN / 2;
+    for i in 1..2u32.pow(10) {
+        let mut j = 0;
+        let mut cur_i = i;
+        let mut joisino_open = vec![false; 10];
+        while cur_i > 0 {
+            if cur_i % 2 == 1 {
+                joisino_open[j] = true;
             }
+
+            j += 1;
+            cur_i /= 2;
         }
 
-        let mut cur = 0;
-        for (i, f) in fnn.iter().enumerate() {
-            let mut common = 0;
-            for o in &opened {
-                if f[*o as usize] == 1 {
-                    common += 1;
+        let mut score = 0;
+        // 店 j
+        for j in 0..n {
+            let mut covered = 0;
+            for k in 0..10 {
+                if joisino_open[k] && fn10[j][k] == 1 {
+                    covered += 1;
                 }
             }
-            cur += pn[i][common];
+            score += pn11[j][covered];
         }
-        ans = ans.max(cur);
+        ans = ans.max(score);
     }
 
     println!("{}", ans);
