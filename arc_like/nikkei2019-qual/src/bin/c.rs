@@ -1,5 +1,4 @@
-// 39min 1WA (27.5min)
-// WA: 見当違いな上に実装も単純に誤っていたがサンプル通ってしまった
+// 39min 1WA (27.5min) -> 4.5min
 
 use proconio::input;
 
@@ -9,20 +8,21 @@ fn main() {
         abn: [(i64, i64); n],
     }
 
-    let mut absum = Vec::with_capacity(n);
+    let mut scores = vec![];
     for (i, ab) in abn.iter().enumerate() {
-        absum.push((ab.0 + ab.1, i));
+        scores.push((ab.0 + ab.1, i));
     }
-    absum.sort_unstable();
-    absum.reverse();
-    let mut a_pts = 0;
-    let mut b_pts = 0;
-    for i in 0..n {
-        match i % 2 {
-            0 => a_pts += abn[absum[i].1].0,
-            1 => b_pts += abn[absum[i].1].1,
-            _ => unreachable!(),
+    scores.sort_unstable();
+    scores.reverse();
+    let mut tkhs = 0;
+    let mut aoki = 0;
+    for (i, s) in scores.iter().enumerate() {
+        if i % 2 == 0 {
+            tkhs += abn[s.1].0;
+        } else {
+            aoki += abn[s.1].1;
         }
     }
-    println!("{}", a_pts - b_pts);
+
+    println!("{}", tkhs - aoki);
 }

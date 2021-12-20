@@ -1,34 +1,39 @@
-// 30min 1WA (26min)
-// WA: ソート漏れ
+// :fu: :fu: 21-12
+// 30min 1WA (26min) -> x (15min)
+
+// https://ikatakos.com/pot/programming_algorithm/contest_history/atcoder/2019/1116_abc145
+// > 時間のかかる料理を先に処理してしまうと、タイムリミットまでに他の料理をさらに食べられるのに、
+// > 最適化されないまま満足度を確定させてしまう。
+// 3 10
+// 100 9
+// 2 2
+// 2 2
 
 use proconio::input;
 
 fn main() {
     input! {
         n: usize,
-        mut t: usize,
+        t: usize,
         mut abn: [(usize, usize); n],
     }
-    t *= 2;
-    let t = t;
-    abn.iter_mut().for_each(|ab| ab.0 *= 2);
     abn.sort_unstable();
-    let abn = abn;
 
-    // 最後の注文がなければ DP 部分和問題の典型
-    // dp[i]: i 分での美味しさ最大
-    let mut dp = vec![0; t + 6005];
+    // dp[i]: i 分経過時点での満足度最大 (t + 1 超過時は全部 t に落とす)
+    let mut dp = vec![0; t + 1];
+    // 食すのに T - 1 分かかる料理を二つ頼む場合を考えてもソートなしでいけるはず
     for ab in &abn {
-        // println!("{:?}", ab);
-        let mut next = dp.clone();
-        for j in 0..t - 1 {
-            let next_j = j + ab.0;
+        let mut cur = dp.clone();
+        for i in 0..t {
+            if i != 0 && dp[i] == 0 {
+                // 省かなくとも変わらないはず
+                continue;
+            }
 
-            next[next_j] = next[next_j].max(dp[j] + ab.1);
+            let next_i = (i + ab.0).min(t);
+            cur[next_i] = cur[next_i].max(dp[i] + ab.1);
         }
-
-        dp = next;
-        // println!("{:?}", dp);
+        dp = cur;
     }
 
     println!("{}", dp.iter().max().unwrap());

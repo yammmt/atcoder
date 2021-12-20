@@ -1,46 +1,51 @@
-// -*- coding:utf-8-unix -*-
-
-// 想定解でなく実行時間ギリギリ
+// 16min
 
 use proconio::input;
 use std::collections::VecDeque;
+
+const DUMMY: usize = std::usize::MAX / 2;
 
 fn main() {
     input! {
         n: usize,
         m: usize,
-        uv: [(usize, usize); m],
-        st: (usize, usize),
+        uvm: [(usize, usize); m],
+        s: usize,
+        t: usize,
     }
 
-    let mut ve = vec![vec![]; n + 1];
-    for e in &uv {
-        ve[e.0].push(e.1);
+    let mut edges = vec![vec![]; n];
+    for uv in &uvm {
+        // 有効辺
+        edges[uv.0 - 1].push(uv.1 - 1);
     }
-    // println!("ve: {:?}", ve);
+    let edges = edges;
 
-    let mut cost = vec![std::u64::MAX; n + 1];
+    // costs[i][j]: 頂点 i に対し状態 j で辿り着くまでの最小コスト
+    // j: けん - けん - ぱ で 0 - 1 - 2
+    let mut costs = vec![vec![DUMMY; 3]; n];
     let mut vdq = VecDeque::new();
-    cost[st.0] = 0; // s != t
-    vdq.push_back((st.0, 0));
-    while !vdq.is_empty() {
-        // println!("{:?}", vdq);
-        let vinfo = vdq.pop_front().unwrap();
-        for v1 in &ve[vinfo.0] {
-            for v2 in &ve[*v1 as usize] {
-                for v3 in &ve[*v2 as usize] {
-                    if cost[*v3] == std::u64::MAX {
-                        cost[*v3] = vinfo.1 + 1;
-                        if *v3 == st.1 {
-                            println!("{}", cost[*v3]);
-                            return;
-                        }
-
-                        vdq.push_back((*v3, cost[*v3]));
-                    }
-                }
+    // (頂点, 状態)
+    vdq.push_back((s - 1, 2));
+    costs[s - 1][2] = 0;
+    while let Some(cur) = vdq.pop_front() {
+        let next_state = (cur.1 + 1) % 3;
+        for e in &edges[cur.0] {
+            if costs[*e][next_state] != DUMMY {
+                continue;
             }
+
+            vdq.push_back((*e, next_state));
+            costs[*e][next_state] = costs[cur.0][cur.1] + 1;
         }
     }
-    println!("-1");
+
+    println!(
+        "{}",
+        if costs[t - 1][2] == DUMMY {
+            -1
+        } else {
+            (costs[t - 1][2] as isize + 1) / 3
+        }
+    );
 }
