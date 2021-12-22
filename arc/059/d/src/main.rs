@@ -1,3 +1,5 @@
+// -> 5min
+
 use proconio::input;
 use proconio::marker::Chars;
 
@@ -6,7 +8,7 @@ fn main() {
         s: Chars,
     }
 
-    // 二文字連続
+    // 二文字が連続 or 三文字中二文字
     for (i, c) in s.iter().enumerate() {
         if i == 0 {
             continue;
@@ -15,16 +17,7 @@ fn main() {
         if *c == s[i - 1] {
             println!("{} {}", i, i + 1);
             return;
-        }
-    }
-
-    // 三文字中二文字
-    for (i, c) in s.iter().enumerate() {
-        if i < 2 {
-            continue;
-        }
-
-        if *c == s[i - 2] {
+        } else if i > 2 && *c == s[i - 2] {
             println!("{} {}", i - 1, i + 1);
             return;
         }

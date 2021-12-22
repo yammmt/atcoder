@@ -1,4 +1,4 @@
-// 5min
+// 5min -> 5min
 
 use proconio::input;
 
@@ -19,8 +19,7 @@ fn main() {
                 for d in c + 1..n {
                     let abcd = (abc * an[d]) % p;
                     for e in d + 1..n {
-                        let abcde = (abcd * an[e]) % p;
-                        if abcde == q {
+                        if (abcd * an[e]) % p == q {
                             ans += 1;
                         }
                     }

@@ -1,6 +1,4 @@
-// -*- coding:utf-8-unix -*-
-
-// 10min.
+// 10min -> 7.5min
 
 use proconio::input;
 use std::collections::HashSet;
@@ -8,21 +6,18 @@ use std::collections::HashSet;
 fn main() {
     input! {
         n: usize,
-        a: [i32; n],
+        an: [usize; n],
     }
-    // a.sort();
-    // println!("{:?}", a);
 
-    let mut hs = HashSet::new();
-    for i in &a {
-        hs.insert(i);
-    }
-    // n は奇数
-    // n 枚 k 種類
-    let ans = if hs.len() % 2 == 0 {
-        hs.len() - 1
-    } else {
-        hs.len()
-    };
-    println!("{}", ans);
+    let mut included = HashSet::new();
+    an.iter().for_each(|a| { included.insert(*a); });
+    let removed = n - included.len();
+    println!(
+        "{}",
+        if removed % 2 == 0 {
+            n - removed
+        } else {
+            n - removed - 1
+        }
+    );
 }

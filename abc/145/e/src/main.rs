@@ -21,7 +21,6 @@ fn main() {
 
     // dp[i]: i 分経過時点での満足度最大 (t + 1 超過時は全部 t に落とす)
     let mut dp = vec![0; t + 1];
-    // 食すのに T - 1 分かかる料理を二つ頼む場合を考えてもソートなしでいけるはず
     for ab in &abn {
         let mut cur = dp.clone();
         for i in 0..t {
