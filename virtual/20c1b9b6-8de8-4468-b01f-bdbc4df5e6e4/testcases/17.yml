@@ -1,0 +1,16 @@
+---
+type: Batch
+timelimit: 2s
+match: Exact
+
+cases:
+  - in: |
+      ABC
+    out: |
+      ARC
+
+extend:
+  - type: Text
+    path: "./17"
+    in: /in/*.txt
+    out: /out/*.txt

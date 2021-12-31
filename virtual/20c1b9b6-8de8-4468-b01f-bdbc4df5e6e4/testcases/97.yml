@@ -1,0 +1,27 @@
+---
+type: Batch
+timelimit: 2s
+match: Exact
+
+cases:
+  - in: |
+      xyz
+      4
+    out: |
+      aya
+  - in: |
+      a
+      25
+    out: |
+      z
+  - in: |
+      codefestival
+      100
+    out: |
+      aaaafeaaivap
+
+extend:
+  - type: Text
+    path: "./97"
+    in: /in/*.txt
+    out: /out/*.txt

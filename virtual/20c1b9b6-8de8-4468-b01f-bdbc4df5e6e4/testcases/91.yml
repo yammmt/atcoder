@@ -1,0 +1,28 @@
+---
+type: Batch
+timelimit: 2s
+match: Exact
+
+cases:
+  - in: |
+      2 2 2
+    out: |
+      Yes
+  - in: |
+      2 2 1
+    out: |
+      No
+  - in: |
+      3 5 8
+    out: |
+      Yes
+  - in: |
+      7 9 20
+    out: |
+      No
+
+extend:
+  - type: Text
+    path: "./91"
+    in: /in/*.txt
+    out: /out/*.txt

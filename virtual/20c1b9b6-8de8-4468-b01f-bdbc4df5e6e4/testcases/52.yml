@@ -1,0 +1,36 @@
+---
+type: Batch
+timelimit: 2s
+match: Exact
+
+cases:
+  - in: |
+      3
+      3
+      1
+      2
+    out: |
+      2
+  - in: |
+      4
+      3
+      4
+      1
+      2
+    out: |
+      -1
+  - in: |
+      5
+      3
+      3
+      4
+      2
+      4
+    out: |
+      3
+
+extend:
+  - type: Text
+    path: "./52"
+    in: /in/*.txt
+    out: /out/*.txt

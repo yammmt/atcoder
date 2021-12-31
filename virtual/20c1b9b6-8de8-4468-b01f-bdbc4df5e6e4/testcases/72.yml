@@ -1,0 +1,27 @@
+---
+type: Batch
+timelimit: 2s
+match: Exact
+
+cases:
+  - in: |
+      6
+      9 14 11 3 5 8
+    out: |
+      Lose
+  - in: |
+      1
+      131
+    out: |
+      Win
+  - in: |
+      8
+      12 23 34 45 56 78 89 98
+    out: |
+      Win
+
+extend:
+  - type: Text
+    path: "./72"
+    in: /in/*.txt
+    out: /out/*.txt

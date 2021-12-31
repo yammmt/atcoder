@@ -1,0 +1,27 @@
+---
+type: Batch
+timelimit: 2s
+match: Exact
+
+cases:
+  - in: |
+      azzel
+      apple
+    out: |
+      Yes
+  - in: |
+      chokudai
+      redcoder
+    out: |
+      No
+  - in: |
+      abcdefghijklmnopqrstuvwxyz
+      ibyhqfrekavclxjstdwgpzmonu
+    out: |
+      Yes
+
+extend:
+  - type: Text
+    path: "./102"
+    in: /in/*.txt
+    out: /out/*.txt

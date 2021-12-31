@@ -1,0 +1,27 @@
+---
+type: Batch
+timelimit: 2s
+match: Exact
+
+cases:
+  - in: |
+      kyoto
+      tokyo
+    out: |
+      Yes
+  - in: |
+      abc
+      arc
+    out: |
+      No
+  - in: |
+      aaaaaaaaaaaaaaab
+      aaaaaaaaaaaaaaab
+    out: |
+      Yes
+
+extend:
+  - type: Text
+    path: "./35"
+    in: /in/*.txt
+    out: /out/*.txt

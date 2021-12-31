@@ -1,0 +1,20 @@
+---
+type: Batch
+timelimit: 2s
+match: Exact
+
+cases:
+  - in: |
+      A
+    out: |
+      T
+  - in: |
+      G
+    out: |
+      C
+
+extend:
+  - type: Text
+    path: "./20"
+    in: /in/*.txt
+    out: /out/*.txt

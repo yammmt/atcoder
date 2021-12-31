@@ -1,0 +1,19 @@
+---
+type: Batch
+timelimit: 2s
+match: Exact
+
+cases:
+  - in: |
+      ozRnonnoe
+    out: |
+      zone
+  - in: |
+      hellospaceRhellospace
+    out: "\n"
+
+extend:
+  - type: Text
+    path: "./45"
+    in: /in/*.txt
+    out: /out/*.txt

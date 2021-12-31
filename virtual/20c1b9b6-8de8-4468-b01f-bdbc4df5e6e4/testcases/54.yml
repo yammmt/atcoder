@@ -1,0 +1,28 @@
+---
+type: Batch
+timelimit: 2s
+match: Exact
+
+cases:
+  - in: |
+      keyofscience
+    out: |
+      YES
+  - in: |
+      mpyszsbznf
+    out: |
+      NO
+  - in: |
+      ashlfyha
+    out: |
+      NO
+  - in: |
+      keyence
+    out: |
+      YES
+
+extend:
+  - type: Text
+    path: "./54"
+    in: /in/*.txt
+    out: /out/*.txt

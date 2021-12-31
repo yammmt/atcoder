@@ -1,0 +1,27 @@
+---
+type: Batch
+timelimit: 2s
+match: Exact
+
+cases:
+  - in: |
+      6
+      icefox
+    out: |
+      3
+  - in: |
+      7
+      firebox
+    out: |
+      7
+  - in: |
+      48
+      ffoxoxuvgjyzmehmopfohrupffoxoxfofofoxffoxoxejffo
+    out: |
+      27
+
+extend:
+  - type: Text
+    path: "./60"
+    in: /in/*.txt
+    out: /out/*.txt

@@ -1,0 +1,28 @@
+---
+type: Batch
+timelimit: 2s
+match: Exact
+
+cases:
+  - in: |
+      serval
+    out: |
+      3
+  - in: |
+      jackal
+    out: |
+      2
+  - in: |
+      zzz
+    out: |
+      0
+  - in: |
+      whbrjpjyhsrywlqjxdbrbaomnw
+    out: |
+      8
+
+extend:
+  - type: Text
+    path: "./73"
+    in: /in/*.txt
+    out: /out/*.txt

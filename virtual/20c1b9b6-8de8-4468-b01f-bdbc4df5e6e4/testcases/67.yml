@@ -1,0 +1,24 @@
+---
+type: Batch
+timelimit: 2s
+match: Exact
+
+cases:
+  - in: |
+      100 200 2
+    out: |
+      10 20
+  - in: |
+      120 150 2
+    out: |
+      14 16
+  - in: |
+      300 333 1
+    out: |
+      UNSATISFIABLE
+
+extend:
+  - type: Text
+    path: "./67"
+    in: /in/*.txt
+    out: /out/*.txt
