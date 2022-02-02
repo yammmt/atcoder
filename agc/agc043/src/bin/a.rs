@@ -1,57 +1,43 @@
+// -> 20.5min
+
 use proconio::input;
 use proconio::marker::Chars;
-use std::collections::VecDeque;
+
+const DUMMY: usize = std::usize::MAX / 4;
 
 fn main() {
     input! {
         h: usize,
         w: usize,
-        s: [Chars; h],
+        shw: [Chars; h],
     }
 
-    let mut vdq = VecDeque::new();
-    let mut dp = vec![vec![h * w + 1; w]; h];
-    dp[0][0] = if s[0][0] == '.' { 0 } else { 1 };
-    vdq.push_back((0, 0));
-    while !vdq.is_empty() {
-        let cur = vdq.pop_front().unwrap();
-        if cur.0 + 1 < h {
-            let p = dp[cur.0][cur.1];
-            if s[cur.0 + 1][cur.1] == '.' {
-                // 今の状態によらずコスト追加不要
-                if p < dp[cur.0 + 1][cur.1] {
-                    dp[cur.0 + 1][cur.1] = p;
-                    vdq.push_back((cur.0 + 1, cur.1));
-                }
-            } else if s[cur.0][cur.1] == '#' && p < dp[cur.0 + 1][cur.1] {
-                // まとめて反転するのでコスト追加不要
-                dp[cur.0 + 1][cur.1] = p;
-                vdq.push_back((cur.0 + 1, cur.1));
-            } else if p + 1 < dp[cur.0 + 1][cur.1] {
-                // 反転
-                dp[cur.0 + 1][cur.1] = p + 1;
-                vdq.push_back((cur.0 + 1, cur.1));
+    // 通るマスを決め打ちしてやれば反転すべきか否かわかるが 200C100 は全列挙不可
+    // 行き止まり次第反転の仕方を全通り試すでも TLE
+
+    // 経路上で今と違う色のマスに入る際にスコアが +1 されるだけでは？
+    let mut scores = vec![vec![DUMMY; w]; h];
+    scores[0][0] = if shw[0][0] == '#' { 1 } else { 0 };
+    for i in 0..h {
+        for j in 0..w {
+            // 配る DP
+            if i + 1 < h {
+                scores[i + 1][j] = if shw[i][j] == '.' && shw[i + 1][j] == '#' {
+                    (scores[i][j] + 1).min(scores[i + 1][j])
+                } else {
+                    scores[i][j].min(scores[i + 1][j])
+                };
             }
-        }
-        if cur.1 + 1 < w {
-            let p = dp[cur.0][cur.1];
-            if s[cur.0][cur.1 + 1] == '.' {
-                // 今の状態によらずコスト追加不要
-                if p < dp[cur.0][cur.1 + 1] {
-                    dp[cur.0][cur.1 + 1] = p;
-                    vdq.push_back((cur.0, cur.1 + 1));
-                }
-            } else if s[cur.0][cur.1] == '#' && p < dp[cur.0][cur.1 + 1] {
-                // まとめて反転するのでコスト追加不要
-                dp[cur.0][cur.1 + 1] = p;
-                vdq.push_back((cur.0, cur.1 + 1));
-            } else if p + 1 < dp[cur.0][cur.1 + 1] {
-                // 反転
-                dp[cur.0][cur.1 + 1] = p + 1;
-                vdq.push_back((cur.0, cur.1 + 1));
+            if j + 1 < w {
+                scores[i][j + 1] = if shw[i][j] == '.' && shw[i][j + 1] == '#' {
+                    (scores[i][j] + 1).min(scores[i][j + 1])
+                } else {
+                    scores[i][j].min(scores[i][j + 1])
+                };
             }
         }
     }
+    // println!("{:?}", scores);
 
-    println!("{}", dp[h - 1][w - 1]);
+    println!("{}", scores[h - 1][w - 1]);
 }
