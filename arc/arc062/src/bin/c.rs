@@ -1,7 +1,5 @@
-// 50min
-
-// :fu: :fu: 数問 サンプルは親切
-// 拡張ユークリッドで (も) 解けそう
+// 50min -> x
+// :fu: :fu: :fu: 数問
 
 use proconio::input;
 
@@ -11,11 +9,15 @@ fn main() {
         tan: [(u64, u64); n],
     }
 
-    let mut ans = (1, 1);
+    let mut t = 1;
+    let mut a = 1;
     for ta in &tan {
-        let n = ((ans.0 + ta.0 - 1) / ta.0).max((ans.1 + ta.1 - 1) / ta.1);
-        ans = (ta.0 * n, ta.1 * n);
+        let nt = (t + ta.0 - 1) / ta.0;
+        let na = (a + ta.1 - 1) / ta.1;
+        let nn = nt.max(na);
+        t = nn * ta.0;
+        a = nn * ta.1;
     }
 
-    println!("{}", ans.0 + ans.1);
+    println!("{}", t + a);
 }
