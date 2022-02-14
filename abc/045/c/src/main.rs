@@ -1,51 +1,32 @@
-// -*- coding:utf-8-unix -*-
+// -> 7min
 
 use proconio::input;
+use proconio::marker::Bytes;
 
 fn main() {
     input! {
-        s: String,
+        s: Bytes,
     }
-    let vn = s.chars().map(|a| a.to_digit(10).unwrap() as u64).collect::<Vec<_>>();
-
-    let n = (s.len() - 1) as usize;
-    if n == 0 {
-        println!("{}", vn[0]);
-        return;
-    }
+    let vs: Vec<u64> = s.iter().map(|&c| (c - b'0') as u64).collect();
 
     let mut ans = 0;
-    for bit_row in 0..2u32.pow(n as u32) {
-        let mut selected = vec![];
-        for i in 0..n {
-            if bit_row & (1 << i) > 0 {
-                selected.push(i);
+
+    for i in 0..2u64.pow((vs.len() - 1) as u32) {
+        let mut cur_0 = 0;
+
+        let mut cur_1 = 0;
+        for (j, &n) in vs.iter().enumerate() {
+            cur_1 *= 10;
+            cur_1 += n;
+            if (i >> j) & 0x01 == 1 {
+                cur_0 += cur_1;
+                cur_1 = 0;
             }
         }
+        cur_0 += cur_1;
 
-        // println!("selected: {:?}", selected);
-        let mut current_sum = 0;
-        let mut current_num = 0;
-        for i in 0..s.len() {
-            if i == 0 {
-                current_num += vn[0];
-                continue;
-            }
-
-            if selected.contains(&(i - 1)) {
-                current_sum += current_num;
-                current_num = vn[i];
-            } else {
-                current_num *= 10;
-                current_num += vn[i];
-            }
-
-            if i == s.len() - 1 {
-                current_sum += current_num;
-            }
-        }
-        // println!("{}", current_sum);
-        ans += current_sum;
+        ans += cur_0;
     }
+
     println!("{}", ans);
 }
