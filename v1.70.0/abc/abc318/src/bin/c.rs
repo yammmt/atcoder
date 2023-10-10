@@ -8,7 +8,6 @@ fn main() {
         mut f_n: [usize; n],
     }
 
-
     f_n.sort();
     f_n.reverse();
     let mut normal_fee_sum: usize = f_n.iter().sum();
