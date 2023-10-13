@@ -1,16 +1,20 @@
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::cmp::Ordering;
-// use std::collections::BinaryHeap;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// static DUMMY: usize = std::usize::MAX / 4;
-
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        y: usize,
+    }
+
+    for i in 0..=n {
+        for j in 0..=n - i {
+            let k = n - i - j;
+            let money = 10000 * i + 5000 * j + 1000 * k;
+            if money == y {
+                println!("{i} {j} {k}");
+                return;
+            }
+        }
+    }
+
+    println!("-1 -1 -1");
 }
