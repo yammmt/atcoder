@@ -8,7 +8,7 @@ fn main() {
 
     let mut number_num = 0;
     for &c in &s {
-        if c >= '0' && c <= '9' {
+        if ('0'..='9').contains(&c) {
             number_num += 1;
         }
     }
