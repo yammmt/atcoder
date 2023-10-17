@@ -1,18 +1,37 @@
-// TODO: Union-Find っぽい, 時間のあるときに解く
-
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::cmp::Ordering;
-// use std::collections::BinaryHeap;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// static DUMMY: usize = std::usize::MAX / 4;
 
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        m: usize,
+        abm: [(usize, usize); m],
+        k: usize,
+        cdk: [(usize, usize); k],
+    }
+
+    let mut ans = 0;
+    for i in 0..2u32.pow(k) {
+        let mut balls = vec![false; n];
+        let mut ii = i;
+        for cd in &cdn {
+            if i % 2 == 0 {
+                balls[cd.0 - 1] = true;
+            } else {
+                balls[cd.1 - 1] = true;
+            }
+            ii /= 2;
+        }
+
+        let mut cur = 0;
+        for ab in &abm {
+            let a = ab.0 - 1;
+            let b = ab.1 - 1;
+            if balls[a] && balls[b] {
+                cur += 1;
+            }
+        }
+        ans = ans.max(cur);
+    }
+
+    println!("{ans}");
 }
