@@ -1,16 +1,13 @@
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::cmp::Ordering;
-// use std::collections::BinaryHeap;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// static DUMMY: usize = std::usize::MAX / 4;
+use proconio::marker::Chars;
 
 fn main() {
-    input! {}
+    input! {
+        _n: usize,
+        s: Chars,
+    }
+
+    let r_cnt = s.iter().filter(|&&c| c == 'R').count();
+    let ans = s.iter().take(r_cnt).filter(|&&c| c == 'W').count();
+    println!("{ans}");
 }
