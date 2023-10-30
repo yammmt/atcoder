@@ -1,16 +1,27 @@
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
-use proconio::input;
-// use proconio::marker::Chars;
-// use std::cmp::Ordering;
-// use std::collections::BinaryHeap;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
+// セグ木か BIT, 後回し
 
-// static DUMMY: usize = std::usize::MAX / 4;
+use proconio::input;
+// use std::cmp::Order;
 
 fn main() {
-    input! {}
+    input! {
+        // n: usize,
+        // q: usize,
+        // tkq: [(usize, usize); q],
+    }
+
+    // 愚直に反転し続けるでは O(N^2)
+    // 反転条件をいもす法でも O(N^2)
+
+    // for tk in tkq {
+    //     let t = tk.0;
+    //     let k = tk.1;
+    //     match k {
+    //         1 => {
+    //         }
+    //         2 => {
+    //         }
+    //         _ => unreachable!(),
+    //     }
+    // }
 }

@@ -1,3 +1,6 @@
+// 二部マッチングに見える
+// この回の PAST が要求する知識量異様でないか
+
 // use itertools::Itertools;
 // use permutohedron::heap_recursive;
 // use petgraph::unionfind::UnionFind;
