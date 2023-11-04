@@ -1,5 +1,3 @@
-// 重実装 本当に？順列一つにインデックス三つ使えばもう少し楽にならない？
-
 use itertools::Itertools;
 use proconio::fastout;
 use proconio::input;
@@ -13,83 +11,63 @@ fn main() {
         c: Chars,
     }
 
-    for ap in (0..n).permutations(n) {
-        let mut v = vec![vec!['.'; n]; n];
-        for i in 0..n {
-            v[i][ap[i]] = 'A';
-        }
-
-        'bp_loop: for bp in (0..n).permutations(n) {
-            for i in 0..n {
-                for j in 0..n {
-                    if v[i][j] != 'A' {
-                        v[i][j] = '.';
-                    }
-                }
-            }
-
-            for i in 0..n {
-                if v[i][bp[i]] != '.' {
-                    continue 'bp_loop;
-                }
-
-                v[i][bp[i]] = 'B';
-            }
-
-            'cp_loop: for cp in (0..n).permutations(n) {
+    // 枝刈りを入れられるけれど, 競技だし計算量を減らすより実装で楽した方がよいとして
+    for ai in (0..n).permutations(n) {
+        for bj in (0..n).permutations(n) {
+            'outer: for ck in (0..n).permutations(n) {
+                let mut v = vec![vec!['.'; n]; n];
                 for i in 0..n {
-                    for j in 0..n {
-                        if v[i][j] != 'A' && v[i][j] != 'B' {
-                            v[i][j] = '.';
-                        }
-                    }
+                    v[i][ai[i]] = 'A';
                 }
-
                 for i in 0..n {
-                    if v[i][cp[i]] != '.' {
-                        continue 'cp_loop;
+                    if v[i][bj[i]] != '.' {
+                        continue 'outer;
                     }
 
-                    v[i][cp[i]] = 'C';
+                    v[i][bj[i]] = 'B';
+                }
+                for i in 0..n {
+                    if v[i][ck[i]] != '.' {
+                        continue 'outer;
+                    }
+
+                    v[i][ck[i]] = 'C';
                 }
 
-                // r
-                let mut r_pass = true;
+                let mut v_col = vec![];
                 for i in 0..n {
                     for j in 0..n {
                         if v[i][j] != '.' {
-                            if v[i][j] != r[i] {
-                                r_pass = false;
-                            }
+                            v_col.push(v[i][j]);
                             break;
                         }
                     }
                 }
-                if !r_pass {
+                if v_col != r {
                     continue;
                 }
 
-                let mut c_pass = true;
+                let mut v_row = vec![];
                 for i in 0..n {
                     for j in 0..n {
                         if v[j][i] != '.' {
-                            if v[j][i] != c[i] {
-                                c_pass = false;
-                            }
+                            v_row.push(v[j][i]);
                             break;
                         }
                     }
                 }
-                if c_pass {
-                    println!("Yes");
-                    for i in 0..n {
-                        for j in 0..n {
-                            print!("{}", v[i][j]);
-                        }
-                        println!();
-                    }
-                    return;
+                if v_row != c {
+                    continue;
                 }
+
+                println!("Yes");
+                for i in 0..n {
+                    for j in 0..n {
+                        print!("{}", v[i][j]);
+                    }
+                    println!();
+                }
+                return;
             }
         }
     }
