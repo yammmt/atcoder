@@ -1,19 +1,24 @@
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::cmp::Ordering;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// static DUMMY: usize = std::usize::MAX / 4;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        m: usize,
+        mut an: [usize; n],
+    }
+    an.sort_unstable();
+
+    // 始点固定でしゃくとり
+    let mut ans = 0;
+    let mut r = 0;
+    for l in 0..n {
+        while r < n && an[r] - an[l] < m {
+            r += 1;
+        }
+        ans = ans.max(r - l);
+    }
+
+    println!("{ans}");
 }
