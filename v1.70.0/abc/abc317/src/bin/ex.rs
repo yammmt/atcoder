@@ -12,6 +12,5 @@ use proconio::input;
 // static DUMMY: usize = std::usize::MAX / 4;
 
 fn main() {
-    input! {
-    }
+    input! {}
 }
