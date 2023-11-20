@@ -18,6 +18,11 @@ fn main() {
     let mut fail = 0;
     while pass - fail > 1 {
         let mid = (pass + fail) / 2;
+        let mid = 100;
+        println!("mid: {mid}");
+        // TODO: mid より小さな値の個数を返しているわけで逆では
+        // mid で売るのは an[i] が mid 以下となる場合のみ
+        // lower_bound で要素数を数える
         let mut pass_s = n as isize;
         let mut fail_s = -1;
         while pass_s - fail_s > 1 {
@@ -30,7 +35,7 @@ fn main() {
         }
         let sellers = pass_s;
 
-        // mid より小さい bm の要素数
+        // mid で買うのは bm[i] が mid 以下となる？
         let mut pass_b = m as isize;
         let mut fail_b = -1;
         while pass_b - fail_b > 1 {
