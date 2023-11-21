@@ -18,7 +18,7 @@ fn main() {
     let mut fail = 0;
     while pass - fail > 1 {
         let mid = (pass + fail) / 2;
-        let mid = 100;
+        // let mid = 100;
         println!("mid: {mid}");
         // TODO: mid より小さな値の個数を返しているわけで逆では
         // mid で売るのは an[i] が mid 以下となる場合のみ
