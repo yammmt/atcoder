@@ -40,7 +40,7 @@ use proconio::input;
 // use std::collections::HashMap;
 // use std::collections::VecDeque;
 
-// static DUMMY: usize = usize::MAX / 4;
+// const DUMMY: usize = usize::MAX / 4;
 
 #[fastout]
 fn main() {
