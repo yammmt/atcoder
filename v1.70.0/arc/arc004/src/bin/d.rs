@@ -2,7 +2,6 @@
 
 use proconio::fastout;
 use proconio::input;
-use std::collections::HashMap;
 
 const MOD: i64 = 1_000_000_007;
 
@@ -68,81 +67,23 @@ fn main() {
     let mut ans_posi = 1i64;
     let mut ans = 0;
 
-    // どこが間違っているかわからない
-    // let mut divisor = 2;
-    // while n > 1 && divisor * divisor <= n_original {
-    //     let mut cnt = 0;
-    //     while n % divisor == 0 {
-    //         cnt += 1;
-    //         n /= divisor;
-    //     }
-    //     if cnt > 0 {
-    //         let muled = com.com((cnt + m - 1) as usize, (m - 1) as usize);
-    //         ans_posi = (ans_posi * muled) % MOD;
-    //     }
-    //     divisor += 1;
-    // }
-    // if n != 1 {
-    //     ans_posi = (ans_posi * m) % MOD;
-    // }
-    // println!("{ans_posi}");
-
-    let mut dbg = 2;
-    let com = Com::new(100000, MOD);
-    loop {
-        // println!("dbg: {dbg}");
-        // AC するが低速
-        let mut ans_ac = 1i64;
-        let mut divisor = 2;
-        let mut n = dbg;
-        while n > 1 {
-            let mut cnt = 0;
-            while n % divisor == 0 {
-                cnt += 1;
-                n /= divisor;
-            }
-            if cnt > 0 {
-                let muled = com.com((cnt + m - 1) as usize, (m - 1) as usize);
-                ans_ac = (ans_ac * muled) % MOD;
-                // println!("divisor: {divisor}, cnt: {cnt}");
-                // println!("  += {added}");
-            }
-            divisor += 1;
+    let mut divisor = 2;
+    while n > 1 && divisor * divisor <= n_original.abs() {
+        let mut cnt = 0;
+        while n % divisor == 0 {
+            cnt += 1;
+            n /= divisor;
         }
-
-        // これもバグってるが合ってるはず
-        let mut ans_wa = 1i64;
-        let mut divisor = 2;
-        let mut n = dbg;
-        while n > 1 && divisor * divisor <= dbg {
-            let mut cnt = 0;
-            while n % divisor == 0 {
-                cnt += 1;
-                n /= divisor;
-            }
-            if cnt > 0 {
-                let muled = com.com((cnt + m - 1) as usize, (m - 1) as usize);
-                ans_wa = (ans_wa * muled) % MOD;
-                // println!("  {divisor} x {cnt}");
-                // println!("    *= {muled}");
-            }
-            divisor += 1;
+        if cnt > 0 {
+            let muled = com.com((cnt + m - 1) as usize, (m - 1) as usize);
+            ans_posi = (ans_posi * muled) % MOD;
         }
-        if n != 1 {
-            // println!("  *= m");
-            ans_wa = (ans_wa * m) % MOD;
-        }
-
-        // 引っかからない, 原因不明
-        if ans_ac != ans_wa {
-            println!("F: {dbg}");
-            println!("  {ans_ac}, {ans_wa}");
-        }
-        assert!(ans_ac == ans_wa);
-
-        dbg += 1;
+        divisor += 1;
     }
-
+    if n != 1 {
+        ans_posi = (ans_posi * m) % MOD;
+    }
+    // println!("{ans_posi}");
 
     // 負数の分配を最後に入れる
     for nega_num in 0..=m {
