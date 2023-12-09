@@ -1,55 +1,46 @@
-// TODO: マスを座標集合でもつ方針を試す
+// マスを座標集合でもつ方針
+// https://atcoder.jp/contests/abc322/editorial/7369
+// Rust で型変換が入るととても辛い
 
 use proconio::input;
 use proconio::marker::Chars;
+use std::collections::HashSet;
 
-fn turn_left(sin: &Vec<Vec<char>>, n: usize) -> Vec<Vec<char>> {
-    let mut ans = vec![vec![' '; n]; n];
-    for i in 0..n {
-        for j in 0..n {
-            ans[i][j] = sin[j][n - i - 1];
+fn is_yes(pos: &[Vec<(isize, isize)>], turn: [usize; 3], pmove: &[(isize, isize); 3]) -> bool {
+    let mut filled = HashSet::new();
+    for (i, vp) in pos.iter().enumerate() {
+        // 回転
+        // 最小値を記憶すると左上の座標を (0, 0) として使える
+        let mut x_min = isize::MAX / 2;
+        let mut y_min = isize::MAX / 2;
+        let mut pos_moved = vec![];
+        for p in vp {
+            let mut x = p.0;
+            let mut y = p.1;
+            for _ in 0..turn[i] {
+                let tmp = x;
+                x = y;
+                y = -tmp;
+            }
+            pos_moved.push((x, y));
+            x_min = x_min.min(x);
+            y_min = y_min.min(y);
+        }
+        // 平行移動
+        for (x, y) in pos_moved {
+            filled.insert((x + pmove[i].0 - x_min, y + pmove[i].1 - y_min));
         }
     }
-    ans
-}
-
-// `poly_begin` で示された座標を左上とする
-fn add_poly(
-    s_base: &Vec<Vec<char>>,
-    s_added: &Vec<Vec<char>>,
-    poly_begin: (isize, isize),
-) -> Option<Vec<Vec<char>>> {
-    let mut ret = s_base.clone();
 
     for i in 0..4 {
-        let i_i = i as isize + poly_begin.0;
         for j in 0..4 {
-            if s_added[i][j] == '.' {
-                continue;
+            if !filled.contains(&(i, j)) {
+                return false;
             }
-
-            let j_i = j as isize + poly_begin.1;
-            if !(0..4).contains(&i_i) || !(0..4).contains(&j_i) {
-                if s_added[i][j] == '#' {
-                    // ポリオミノが範囲外に出る
-                    return None;
-                } else {
-                    continue;
-                }
-            }
-
-            let i_u = i_i as usize;
-            let j_u = j_i as usize;
-            if s_base[i_u][j_u] == '#' {
-                // ポリオミノが被る
-                return None;
-            }
-
-            ret[i_u][j_u] = s_added[i][j];
         }
     }
 
-    Some(ret)
+    true
 }
 
 fn main() {
@@ -65,76 +56,62 @@ fn main() {
     // これが 3 つあると 64x3 = 192 通りにしかならず, 全探索ができそう
     // 実装はつらめ
 
-    let p0_t0 = p0;
-    let p0_t1 = turn_left(&p0_t0, 4);
-    let p0_t2 = turn_left(&p0_t1, 4);
-    let p0_t3 = turn_left(&p0_t2, 4);
-    let vp0 = vec![p0_t0, p0_t1, p0_t2, p0_t3];
-
-    let p1_t0 = p1;
-    let p1_t1 = turn_left(&p1_t0, 4);
-    let p1_t2 = turn_left(&p1_t1, 4);
-    let p1_t3 = turn_left(&p1_t2, 4);
-    let vp1 = vec![p1_t0, p1_t1, p1_t2, p1_t3];
-
-    let p2_t0 = p2;
-    let p2_t1 = turn_left(&p2_t0, 4);
-    let p2_t2 = turn_left(&p2_t1, 4);
-    let p2_t3 = turn_left(&p2_t2, 4);
-    let vp2 = vec![p2_t0, p2_t1, p2_t2, p2_t3];
-
-    let mut v = vec![];
-    let mass_base = vec![vec!['.'; 4]; 4];
-    for pp0 in vp0 {
-        for i in -3..=3 {
-            for j in -3..=3 {
-                let Some(mass) = add_poly(&mass_base, &pp0, (i, j)) else { continue; };
-                v.push(mass);
-            }
-        }
-    }
-
-    let mut vv = vec![];
-    while let Some(mass) = v.pop() {
-        for pp1 in &vp1 {
-            for i in -3..=3 {
-                for j in -3..=3 {
-                    let Some(mass1) = add_poly(&mass, pp1, (i, j)) else { continue; };
-                    vv.push(mass1);
+    let mut sharp_num = 0;
+    let mut pos = vec![vec![]; 3];
+    for (i, p) in [p0, p1, p2].iter().enumerate() {
+        for j in 0..4 {
+            for k in 0..4 {
+                if p[j][k] == '#' {
+                    pos[i].push((j as isize, k as isize));
+                    sharp_num += 1;
                 }
             }
         }
     }
+    // 最初に弾かなければ後の判定が辛くなる, 重ねて置かれると通ってしまう (例 5)
+    if sharp_num != 16 {
+        println!("No");
+        return;
+    }
 
-    while let Some(mass) = vv.pop() {
-        for pp2 in &vp2 {
-            for i in -3..=3 {
-                for j in -3..=3 {
-                    let Some(mass2) = add_poly(&mass, pp2, (i, j)) else { continue; };
-                    let mut sharp_num = 0;
-                    for ii in 0..4 {
-                        for jj in 0..4 {
-                            if mass2[ii][jj] == '#' {
-                                sharp_num += 1;
-                            }
-                        }
-                    }
-                    if sharp_num == 16 {
-                        println!("Yes");
-                        return;
-                    }
-                }
+    // 回転
+    let mut turn_num = vec![];
+    for i in 0..4 {
+        for j in 0..4 {
+            for k in 0..4 {
+                turn_num.push([i, j, k]);
+            }
+        }
+    }
+    // 平行移動
+    let mut parallel_move_each = vec![];
+    for i in 0..4 {
+        for j in 0..4 {
+            parallel_move_each.push((i as isize, j as isize));
+        }
+    }
+    let pm_len = parallel_move_each.len();
+    let mut parallel_move = vec![];
+    for i in 0..pm_len {
+        for j in 0..pm_len {
+            for k in 0..pm_len {
+                parallel_move.push([
+                    parallel_move_each[i],
+                    parallel_move_each[j],
+                    parallel_move_each[k],
+                ]);
             }
         }
     }
 
-    // for item in &v {
-    //     for i in 0..4 {
-    //         println!("{:?}", item[i]);
-    //     }
-    //     println!();
-    // }
-    // return;
+    for t in turn_num {
+        for pm in &parallel_move {
+            if is_yes(&pos, t, pm) {
+                println!("Yes");
+                return;
+            }
+        }
+    }
 
     println!("No");
 }

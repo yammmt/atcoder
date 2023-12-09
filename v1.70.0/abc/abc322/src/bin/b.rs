@@ -17,9 +17,9 @@ fn main() {
     }
 
     let mut is_suffix = true;
-    let mut ss = s.clone();
+    let mut ss = s;
     ss.reverse();
-    let mut tt = t.clone();
+    let mut tt = t;
     tt.reverse();
     for i in 0..ss.len() {
         if ss[i] != tt[i] {
