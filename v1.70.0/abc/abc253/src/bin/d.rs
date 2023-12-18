@@ -23,9 +23,7 @@ fn main() {
 
     // 全部足して an と bm を引いて ab 公倍数を足す
 
-    let ap_sum = |last_term| {
-        last_term * (1 + last_term) / 2
-    };
+    let ap_sum = |last_term| last_term * (1 + last_term) / 2;
 
     let mut n_sum = n * (1 + n) / 2;
     let a_sum = a * ap_sum(n / a);
