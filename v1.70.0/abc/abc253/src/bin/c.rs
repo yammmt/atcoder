@@ -1,22 +1,57 @@
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
+// multiset なし言語だと大変
+
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
+use std::collections::BTreeMap;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        q: usize,
+    }
+
+    let mut btm = BTreeMap::new();
+    for _ in 0..q {
+        input! {
+            i: usize,
+        }
+        match i {
+            1 => {
+                input! {
+                    x: usize,
+                }
+                if let Some(cur) = btm.get(&x) {
+                    btm.insert(x, cur + 1);
+                } else {
+                    btm.insert(x, 1);
+                }
+            },
+            2 => {
+                input! {
+                    x: usize,
+                    c: usize,
+                }
+                if let Some(&cur) = btm.get(&x) {
+                    if cur > c {
+                        btm.insert(x, cur - c);
+                    } else {
+                        btm.remove(&x);
+                    }
+                }
+            }
+            3 => {
+                let vmin = btm.pop_first().unwrap();
+                if btm.is_empty() {
+                    println!("0");
+                    btm.insert(vmin.0, vmin.1);
+                } else {
+                    let vmax = btm.pop_last().unwrap();
+                    println!("{}", vmax.0 - vmin.0);
+                    btm.insert(vmin.0, vmin.1);
+                    btm.insert(vmax.0, vmax.1);
+                }
+            }
+            _ => unreachable!(),
+        }
+    }
 }
