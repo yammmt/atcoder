@@ -1,20 +1,34 @@
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// static DUMMY: usize = usize::MAX / 4;
+use proconio::marker::Usize1;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        m: usize,
+        hn: [usize; n],
+        abm: [(Usize1, Usize1); m],
+    }
+
+    let mut edges = vec![vec![]; n];
+    for (a, b) in abm {
+        edges[a].push(b);
+        edges[b].push(a);
+    }
+
+    let mut ans = 0;
+    for i in 0..n {
+        let mut is_good = true;
+        for v in &edges[i] {
+            if hn[*v] >= hn[i] {
+                is_good = false;
+            }
+        }
+        if is_good {
+            ans += 1;
+        }
+    }
+
+    println!("{ans}");
 }
