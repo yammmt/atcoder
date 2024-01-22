@@ -1,19 +1,27 @@
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::cmp::Ordering;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// static DUMMY: usize = std::usize::MAX / 4;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        wxn: [(usize, usize); n],
+    }
+
+    let mut participants = vec![0; 24];
+    for (w, x) in wxn {
+        let x_begin = (x + 9) % 24;
+        let x_end = x_begin + 8;
+        for i in x_begin..=x_end.min(23) {
+            participants[i] += w;
+        }
+        let x_end = x_end % 24;
+        if x_end < x_begin {
+            for i in 0..=x_end {
+                participants[i] += w;
+            }
+        }
+    }
+
+    println!("{}", participants.iter().max().unwrap());
 }

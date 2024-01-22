@@ -1,24 +1,44 @@
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Bytes;
-// use proconio::marker::Chars;
-// use proconio::marker::Usize1;
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        q: usize,
+        mut an: [usize; n],
+        xq: [usize; q],
+    }
+    an.sort_unstable();
+
+    let mut cusum = vec![0; n + 1];
+    for (i, a) in an.iter().enumerate() {
+        cusum[i + 1] = cusum[i] + *a;
+    }
+
+    for x in xq {
+        let mut i_greater = n as isize;
+        let mut i_eq_or_lesser = -1;
+        while (i_greater - i_eq_or_lesser) > 1 {
+            let mid = (i_greater + i_eq_or_lesser) as usize / 2;
+            if an[mid] > x {
+                i_greater = mid as isize;
+            } else {
+                i_eq_or_lesser = mid as isize;
+            }
+        }
+
+        let mut ans = 0;
+        if i_eq_or_lesser >= 0 {
+            let i = i_eq_or_lesser as usize;
+            let cur = x * (i + 1) - cusum[i + 1];
+            ans += cur;
+        }
+        if i_greater < n as isize {
+            let i = i_greater as usize;
+            let cur = (cusum[n] - cusum[i]) - x * (n - i);
+            ans += cur;
+        }
+        println!("{ans}");
+    }
 }
