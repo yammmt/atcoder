@@ -10,9 +10,7 @@ fn main() {
     }
     let dir = [(1, 0), (0, 1), (1, 1), (1, -1)];
 
-    let i_in_range = |i| {
-        !(i < 0 || i >= n as isize)
-    };
+    let i_in_range = |i| !(i < 0 || i >= n as isize);
 
     for i in 0..n {
         for j in 0..n {
