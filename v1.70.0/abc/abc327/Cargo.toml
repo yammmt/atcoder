@@ -1,11 +1,10 @@
 [package]
-name = "abc256"
+name = "abc327"
 version = "0.1.0"
 edition = "2021"
 
 # dependencies added to new project
 [dependencies]
-ac-library-rs = "=0.1.1"
 itertools = "=0.11.0"
 petgraph = "=0.6.3"
 permutohedron = "=0.2.4"
