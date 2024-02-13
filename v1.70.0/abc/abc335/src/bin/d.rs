@@ -20,7 +20,7 @@ fn main() {
     let mut ans = vec![vec![0; n]; n];
     let mut cur = (0isize, 0isize);
     let mut di = 0;
-    for i in 1..n*n {
+    for i in 1..n * n {
         ans[cur.0 as usize][cur.1 as usize] = i;
 
         let dir_i = dir[di].0;

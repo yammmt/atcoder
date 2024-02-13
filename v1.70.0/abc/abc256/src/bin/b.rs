@@ -1,24 +1,28 @@
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Bytes;
-// use proconio::marker::Chars;
-// use proconio::marker::Usize1;
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        an: [usize; n],
+    }
+
+    let mut p = 0;
+    let mut grid = vec![0; 4];
+    for a in an {
+        grid[0] += 1;
+        let mut grid_nxt = vec![0; 4];
+        for i in 0..4 {
+            let i_nxt = i + a;
+            if i_nxt > 3 {
+                p += grid[i];
+            } else {
+                grid_nxt[i_nxt] = grid[i];
+            }
+        }
+        grid = grid_nxt;
+    }
+
+    println!("{p}");
 }
