@@ -20,6 +20,7 @@ itertools = "=0.11.0"
 petgraph = "=0.6.3"
 permutohedron = "=0.2.4"
 proconio = { version = "=0.4.5", features = ["derive"] }
+rand = { version = "=0.8.5", features = ["small_rng"] }
 
 [project]
 # to create `rust-toolchain` file, uncomment this line.
@@ -38,6 +39,8 @@ use proconio::input;
 // use proconio::marker::Bytes;
 // use proconio::marker::Chars;
 // use proconio::marker::Usize1;
+// use rand::rngs::SmallRng;
+// use rand::{Rng, SeedableRng};
 // use std::cmp::Ordering;
 // use std::cmp::Reverse;
 // use std::collections::BinaryHeap;
