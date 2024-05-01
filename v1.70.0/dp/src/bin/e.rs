@@ -1,22 +1,43 @@
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
 
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
+const DUMMY: usize = usize::MAX / 3;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        w: usize,
+        wvn: [(usize, usize); n],
+    }
+    let vsum = wvn.iter().map(|wv| wv.1).sum::<usize>();
+
+    // 価値を達成するために必要な最低容量
+    let mut dp = vec![DUMMY; vsum + 1];
+    dp[0] = 0;
+    for (w, v) in wvn {
+        let mut cur = vec![DUMMY; vsum + 1];
+        for i in 0..vsum {
+            // 選ばない
+            cur[i] = cur[i].min(dp[i]);
+
+            // 選ぶ
+            let v_nxt = i + v;
+            if v_nxt > vsum {
+                continue;
+            }
+
+            cur[v_nxt] = cur[v_nxt].min(dp[i] + w);
+        }
+        dp = cur;
+    }
+
+    let mut ans = 0;
+    for (i, &v) in dp.iter().enumerate() {
+        if v <= w {
+            ans = i;
+        }
+    }
+
+    println!("{ans}");
 }
