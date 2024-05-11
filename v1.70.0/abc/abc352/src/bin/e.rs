@@ -1,29 +1,55 @@
-// use ac_library::modint::ModInt1000000007 as Mint;
-// use ac_library::modint::ModInt998244353 as Mint;
-// use ac_library::SccGraph;
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
+use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Bytes;
-// use proconio::marker::Chars;
-// use proconio::marker::Usize1;
-// use rand::rngs::SmallRng;
-// use rand::{Rng, SeedableRng};
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
+use proconio::marker::Usize1;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        m: usize,
+    }
+
+    // コストが小さい順に貪欲につなげていけばよい
+    // sum(k_i) がそれほど大きくないから, 連結を二乗オーダーでやらなければなんとかなりそう
+
+    let mut cm = vec![];
+    let mut am = vec![];
+
+    for i in 0..m {
+        input! {
+            k: usize,
+            c: usize,
+            ak: [Usize1; k],
+        }
+        cm.push((c, i));
+        am.push(ak);
+    }
+    cm.sort_unstable();
+
+    let mut ans = 0;
+    let mut uf = UnionFind::new(n);
+    for (c, i) in cm {
+        for j in 1..am[i].len() {
+            let group_a = uf.find(am[i][j - 1]);
+            let group_b = uf.find(am[i][j]);
+            if group_a == group_b {
+                continue;
+            }
+
+            uf.union(am[i][j - 1], am[i][j]);
+            ans += c;
+        }
+    }
+
+    let mut member_num = vec![0; n];
+    for i in 0..n {
+        member_num[uf.find(i)] += 1;
+    }
+
+    if member_num.iter().any(|&m| m == n) {
+        println!("{ans}");
+    } else {
+        println!("-1");
+    }
 }
