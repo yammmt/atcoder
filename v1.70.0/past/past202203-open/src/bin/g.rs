@@ -1,30 +1,37 @@
-// use ac_library::modint::ModInt1000000007 as Mint;
-// use ac_library::modint::ModInt998244353 as Mint;
-// use ac_library::SccGraph;
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Bytes;
-// use proconio::marker::Chars;
-// use proconio::marker::Usize1;
-// use rand::rngs::SmallRng;
-// use rand::{Rng, SeedableRng};
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
 
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
+const CNT_MAX: usize = 100_000;
 
 #[fastout]
 fn main() {
     input! {
+        a: f64,
+        b: f64,
+        c: f64,
     }
+
+    let fx = |x: f64| a * x.powf(5.0) + b * x + c;
+
+    // 何も考えず三分探索する
+    // 凸の向きを考えないとだめな気がするが
+    let mut l = 1.0;
+    let mut r = 2.0;
+    let mut cnt = 0;
+    while r - l > 1e-11 && cnt < CNT_MAX {
+        let llr = (2.0 * l + r) / 3.0;
+        let lrr = (l + 2.0 * r) / 3.0;
+
+        let fl = fx(llr);
+        let fr = fx(lrr);
+        if fl.abs() < fr.abs() {
+            r = lrr;
+        } else {
+            l = llr;
+        }
+        cnt += 1;
+    }
+
+    // 境界を厳しく見ているので l でも r でも変わらん
+    println!("{l}");
 }
