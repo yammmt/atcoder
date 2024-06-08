@@ -1,29 +1,31 @@
-// use ac_library::modint::ModInt1000000007 as Mint;
-// use ac_library::modint::ModInt998244353 as Mint;
-// use ac_library::SccGraph;
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Bytes;
-// use proconio::marker::Chars;
-// use proconio::marker::Usize1;
-// use rand::rngs::SmallRng;
-// use rand::{Rng, SeedableRng};
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        an: [usize; n],
+    }
+
+    // a が指数であるがために愚直操作が通りそうな気がする, O(N^2) もかからない？
+    // => そもそもボールの削除は最大でも N-1 回
+
+    let mut row = vec![];
+    for a in an {
+        row.push(a);
+        while row.len() >= 2 {
+            let l0 = row.pop().unwrap();
+            let l1 = row.pop().unwrap();
+            if l0 == l1 {
+                row.push(l0 + 1);
+            } else {
+                row.push(l1);
+                row.push(l0);
+                break;
+            }
+        }
+    }
+
+    println!("{}", row.len());
 }

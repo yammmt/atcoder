@@ -1,29 +1,24 @@
-// use ac_library::modint::ModInt1000000007 as Mint;
-// use ac_library::modint::ModInt998244353 as Mint;
-// use ac_library::SccGraph;
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Bytes;
-// use proconio::marker::Chars;
-// use proconio::marker::Usize1;
-// use rand::rngs::SmallRng;
-// use rand::{Rng, SeedableRng};
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        abn: [(usize, usize); n],
+    }
+
+    let mut head_gap_max = 0;
+    let mut head_gap_max_i = 0;
+    for (i, (a, b)) in abn.iter().enumerate() {
+        let head_gap = b - a;
+        if head_gap > head_gap_max {
+            head_gap_max = head_gap;
+            head_gap_max_i = i;
+        }
+    }
+
+    let shoulder_sum = abn.iter().map(|ab| ab.0).sum::<usize>();
+    let ans = shoulder_sum - abn[head_gap_max_i].0 + abn[head_gap_max_i].1;
+    println!("{ans}");
 }
