@@ -1,29 +1,49 @@
-// use ac_library::modint::ModInt1000000007 as Mint;
-// use ac_library::modint::ModInt998244353 as Mint;
-// use ac_library::SccGraph;
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Bytes;
-// use proconio::marker::Chars;
-// use proconio::marker::Usize1;
-// use rand::rngs::SmallRng;
-// use rand::{Rng, SeedableRng};
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
+use proconio::marker::Chars;
 
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
+fn a_win(a: char, b: char) -> bool {
+    !((b == 'R' && a == 'S') || (b == 'P' && a == 'R') || (b == 'S' && a == 'P'))
+}
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        k: usize,
+        s: Chars,
+    }
+
+    // 参加者が最大で 2^100 人も発生する
+    // 試合数は初戦で 2^(k-1) 回 = 2^99 回あるので愚直だと無事に TLE
+    // s を二度繰り返してやれば試合の勝者を繰り返しで表せられるようになる
+    // 先頭分だけくくりゃあいいのか, 枝刈りもしなくてよさそう
+
+    let mut hands = vec![];
+    for i in 0..2 * n {
+        hands.push(s[i % n]);
+    }
+
+    for _ in 0..k {
+        let mut next = vec![];
+        for i in 0..2 * n {
+            if i % 2 == 1 {
+                continue;
+            }
+
+            next.push(if a_win(hands[i], hands[i + 1]) {
+                hands[i]
+            } else {
+                hands[i + 1]
+            });
+        }
+
+        for i in 0..n {
+            next.push(next[i]);
+        }
+
+        hands = next;
+    }
+
+    println!("{}", hands[0]);
 }
