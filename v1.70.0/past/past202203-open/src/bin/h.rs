@@ -1,29 +1,64 @@
-// use ac_library::modint::ModInt1000000007 as Mint;
-// use ac_library::modint::ModInt998244353 as Mint;
-// use ac_library::SccGraph;
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
+use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Bytes;
-// use proconio::marker::Chars;
-// use proconio::marker::Usize1;
-// use rand::rngs::SmallRng;
-// use rand::{Rng, SeedableRng};
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
+use proconio::marker::Usize1;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        q: usize,
+    }
+
+    let mut uf = UnionFind::new(n);
+    let mut members = vec![vec![]; n];
+    for i in 0..n {
+        members[i].push(i);
+    }
+
+    for _ in 0..q {
+        input! {
+            a: usize,
+            u: Usize1,
+        }
+
+        if a == 1 {
+            input! {
+                v: Usize1,
+            }
+
+            let gu_before = uf.find(u);
+            let gv_before = uf.find(v);
+            if gu_before == gv_before {
+                // これがないと後のメンバー移す処理が無限ループになる
+                continue;
+            }
+
+            uf.union(gu_before, gv_before);
+
+            let gu_after = uf.find(u);
+            if gu_before == gu_after {
+                while let Some(m) = members[gv_before].pop() {
+                    members[gu_before].push(m);
+                }
+            } else {
+                while let Some(m) = members[gu_before].pop() {
+                    members[gv_before].push(m);
+                }
+            }
+        } else {
+            let g = uf.find(u);
+            // log 分計算量増えるの嫌だが, 出力する総数から考えるには大丈夫なはず
+            let mut ans = members[g].clone();
+            ans.sort_unstable();
+            for (i, a) in ans.iter().enumerate() {
+                print!("{}", a + 1);
+                if i == ans.len() - 1 {
+                    println!();
+                } else {
+                    print!(" ");
+                }
+            }
+        }
+    }
 }

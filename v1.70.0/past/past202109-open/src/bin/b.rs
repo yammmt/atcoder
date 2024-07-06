@@ -1,16 +1,27 @@
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::input;
-// use proconio::marker::Chars;
-// use std::cmp::Ordering;
-// use std::collections::BinaryHeap;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// static DUMMY: usize = std::usize::MAX / 4;
+use std::collections::HashSet;
 
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        m: usize,
+        an: [usize; n],
+        bm: [usize; m],
+    }
+
+    let set_a: HashSet<usize> = HashSet::from_iter(an.into_iter());
+    let mut ans = vec![];
+    bm.iter()
+        .filter(|b| set_a.contains(b))
+        .for_each(|&b| ans.push(b));
+
+    ans.sort_unstable();
+    for (i, a) in ans.iter().enumerate() {
+        print!("{a}");
+        if i == ans.len() - 1 {
+            println!();
+        } else {
+            print!(" ");
+        }
+    }
 }

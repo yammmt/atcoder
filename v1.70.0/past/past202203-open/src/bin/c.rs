@@ -1,29 +1,26 @@
-// use ac_library::modint::ModInt1000000007 as Mint;
-// use ac_library::modint::ModInt998244353 as Mint;
-// use ac_library::SccGraph;
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Bytes;
-// use proconio::marker::Chars;
-// use proconio::marker::Usize1;
-// use rand::rngs::SmallRng;
-// use rand::{Rng, SeedableRng};
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
+use proconio::marker::Chars;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        a: Chars,
+    }
+
+    // 77,777
+    // 9,982,443,539,982,448,531,000,000,007
+    // 3 桁ごとに区切るたびに英字をインクリメント
+
+    let mut digits = a.len() as isize;
+    let mut three_increments = 0;
+    while digits > 3 {
+        three_increments += 1;
+        digits -= 3;
+    }
+
+    for i in 0..digits as usize {
+        print!("{}", a[i]);
+    }
+    println!("{}", (b'a' + three_increments - 1) as char);
 }
