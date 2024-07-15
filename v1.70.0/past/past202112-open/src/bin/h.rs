@@ -1,29 +1,42 @@
-// use ac_library::modint::ModInt1000000007 as Mint;
-// use ac_library::modint::ModInt998244353 as Mint;
-// use ac_library::SccGraph;
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
+// FIXME: テンプレ解法でない考え方で求まらない理由がわからん
+// https://atcoder.jp/contests/past202112-open/submissions/55635279
+// s を基準に, dp[i] を非共通部分列の長さが i である場合の t の最後の要素の位置と定義する。
+// dp[] を十分大きなダミー値として初期化する。
+// s の各要素に対して DP を回し、非ダミー値が入っている最大のインデックスが答え
+
+// ↑は↓の提出と同方針？
+//     https://atcoder.jp/contests/past202112-open/submissions/29112111
+
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Bytes;
-// use proconio::marker::Chars;
-// use proconio::marker::Usize1;
-// use rand::rngs::SmallRng;
-// use rand::{Rng, SeedableRng};
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
+use proconio::marker::Chars;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        s: Chars,
+        t: Chars,
+    }
+
+    // dp[i][j]: s[i], t[j] まで見ての最長非共通部分列の長さ
+    let mut dp = vec![vec![0; t.len() + 1]; s.len() + 1];
+
+    for i in 0..=s.len() {
+        for j in 0..=t.len() {
+            if i != s.len() {
+                // 今見ているものを採用しない
+                dp[i + 1][j] = dp[i + 1][j].max(dp[i][j]);
+            }
+            if j != t.len() {
+                // 今見ているものを採用しない
+                dp[i][j + 1] = dp[i][j + 1].max(dp[i][j]);
+            }
+            if i != s.len() && j != t.len() && s[i] != t[j] {
+                // 今見ているものを採用する
+                dp[i + 1][j + 1] = dp[i + 1][j + 1].max(dp[i][j] + 1);
+            }
+        }
+    }
+
+    println!("{}", dp[s.len()][t.len()]);
 }
