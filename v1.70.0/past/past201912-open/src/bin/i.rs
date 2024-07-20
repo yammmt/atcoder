@@ -1,29 +1,47 @@
-// use ac_library::modint::ModInt1000000007 as Mint;
-// use ac_library::modint::ModInt998244353 as Mint;
-// use ac_library::SccGraph;
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Bytes;
-// use proconio::marker::Chars;
-// use proconio::marker::Usize1;
-// use rand::rngs::SmallRng;
-// use rand::{Rng, SeedableRng};
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
+use proconio::marker::Chars;
 
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
+const DUMMY: usize = usize::MAX / 4;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        m: usize,
+        scm: [(Chars, usize); m],
+    }
+
+    let mut ucm = vec![];
+    for (s, c) in scm {
+        let mut b = 0;
+        for i in 0..n {
+            b <<= 1;
+            if s[i] == 'Y' {
+                b |= 1;
+            }
+        }
+        ucm.push((b, c));
+    }
+
+    let i_max = 2usize.pow(n as u32);
+    let mut dp = vec![DUMMY; i_max];
+    dp[0] = 0;
+    for i in 0..i_max {
+        if dp[i] == DUMMY {
+            continue;
+        }
+
+        for j in 0..m {
+            let i_next = i | ucm[j].0;
+            dp[i_next] = dp[i_next].min(dp[i] + ucm[j].1);
+        }
+    }
+
+    if dp[i_max - 1] == DUMMY {
+        println!("-1");
+        return;
+    }
+
+    println!("{}", dp[i_max - 1]);
 }
