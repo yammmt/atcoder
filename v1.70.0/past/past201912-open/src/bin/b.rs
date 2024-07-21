@@ -1,29 +1,22 @@
-// use ac_library::modint::ModInt1000000007 as Mint;
-// use ac_library::modint::ModInt998244353 as Mint;
-// use ac_library::SccGraph;
-// use itertools::Itertools;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Bytes;
-// use proconio::marker::Chars;
-// use proconio::marker::Usize1;
-// use rand::rngs::SmallRng;
-// use rand::{Rng, SeedableRng};
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
+use std::cmp::Ordering;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        an: [i32; n],
+    }
+
+    let mut a_yesterday = an[0];
+    for &a in an.iter().skip(1) {
+        let diff = (a - a_yesterday).abs();
+        match a.cmp(&a_yesterday) {
+            Ordering::Less => println!("down {diff}"),
+            Ordering::Equal => println!("stay"),
+            Ordering::Greater => println!("up {diff}"),
+        }
+        a_yesterday = a;
+    }
 }
