@@ -22,6 +22,7 @@ petgraph = "=0.6.3"
 permutohedron = "=0.2.4"
 proconio = { version = "=0.4.5", features = ["derive"] }
 rand = { version = "=0.8.5", features = ["small_rng"] }
+superslice = "=1.0.0"
 
 [project]
 # to create `rust-toolchain` file, uncomment this line.
@@ -50,6 +51,7 @@ use proconio::input;
 // use std::collections::HashSet;
 // use std::collections::HashMap;
 // use std::collections::VecDeque;
+// use superslice::Ext;
 
 // const DUMMY: usize = usize::MAX / 4;
 // const MOD: usize = 998_244_353;
