@@ -1,31 +1,27 @@
-// use ac_library::modint::ModInt1000000007 as Mint;
-// use ac_library::modint::ModInt998244353 as Mint;
-// use ac_library::SccGraph;
-// use itertools::Itertools;
-// use ordered_float::NotNan;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Bytes;
-// use proconio::marker::Chars;
-// use proconio::marker::Usize1;
-// use rand::rngs::SmallRng;
-// use rand::{Rng, SeedableRng};
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-// use superslice::Ext;
-
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        an: [isize; n],
+    }
+
+    // dp[i][j]: i 匹目終了時の最大経験値で, [j] はこれまで倒した数が奇数であれば 1
+    // 0 が偶数判定通ると厄介だから, 先頭項を初期値として入れて, 貰う DP にする
+    let mut dp = vec![vec![0; 2]; n];
+    dp[0][0] = 0;
+    dp[0][1] = an[0];
+
+    for (i, a) in an.iter().enumerate() {
+        if i == 0 {
+            continue;
+        }
+
+        dp[i][0] = dp[i - 1][0].max(dp[i - 1][1] + 2 * a);
+        dp[i][1] = dp[i - 1][1].max(dp[i - 1][0] + a);
+    }
+
+    println!("{}", dp[n - 1][0].max(dp[n - 1][1]));
 }
