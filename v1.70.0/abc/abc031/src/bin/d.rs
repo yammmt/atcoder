@@ -1,3 +1,5 @@
+// 重実装寄りに見える
+
 use proconio::input;
 use proconio::marker::Chars;
 
@@ -35,7 +37,6 @@ fn main() {
             b /= 3;
         }
         // println!("  num_len: {:?}", num_len);
-        // ここまではあっている
 
         let mut num2chars: Vec<Option<Vec<char>>> = vec![None; k + 1];
         let mut could_ans = true;
