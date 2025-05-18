@@ -30,6 +30,7 @@ fn main() {
     for s in 0..2usize.pow(16) {
         for i in 0..4 {
             for j in 0..4 {
+                // s2s: 状態 s を作り出せるマス
                 let mut s2s = vec![];
                 for &(dx, dy) in &dxy {
                     let i2 = (i as usize).wrapping_add_signed(dx);
@@ -39,7 +40,7 @@ fn main() {
                         continue;
                     }
 
-                    // 的のないマス
+                    // 的のないマスにあてても, グリッドの状態は変化しない
                     if s & (1 << (i2 * 4 + j2)) == 0 {
                         continue;
                     }
