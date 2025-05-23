@@ -1,3 +1,6 @@
+// 実装ゲロ重い, AI にも逃げられず
+// というか petgraph 使った正解者いる？独自実装不可避？
+
 use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
@@ -102,7 +105,6 @@ impl Lca {
 
 #[fastout]
 fn main() {
-    const DUMMY: usize = usize::MAX;
     input! {
         n: usize,
         q: usize,
@@ -123,40 +125,61 @@ fn main() {
 
     let lca = Lca::new(n, edges);
     let mut uf = UnionFind::new(n);
-    // FIXME:
+    // 各グループにて最も根に近い頂点
     let mut grp_root = (0..n).collect::<Vec<usize>>();
 
     // (u, v) を塗る, を, (u, x), (x, v) を塗る, に読み替える
     // UnionFind に合わせて各グループの最も根に近い頂点を管理する
 
-    let mut ans = vec![DUMMY; n - 1];
+    let mut ans = vec![0; n - 1];
+    println!("{:?}", lca.depth);
     for (mut u, mut v, c) in uvcq {
         let x = lca.query(u, v);
+        let mut depth_u = lca.depth[grp_root[uf.find(u)]];
+        let mut depth_v = lca.depth[grp_root[uf.find(v)]];
+        // let depth_x = lca.depth[grp_root[uf.find(x)]];
         let depth_x = lca.depth[x];
-        let mut depth_u = lca.depth[u];
-        let mut depth_v = lca.depth[v];
+        // println!("lca: {x}");
+        // println!("u: {u}, depth_u: {}", depth_u);
+        // println!("v: {v}, depth_v: {}", depth_v);
+        // println!("x: {x}, depth_x: {}", depth_x);
+
+
+
         while depth_u > depth_x {
             // FIXME:
             let p = lca.parent[0][u];
-            let eid = edge_to_id.get(&(u, p)).unwrap();
+            if uf.equiv(u, p) { break; }
+
+            let eid = *edge_to_id.get(&(u, p)).unwrap();
             ans[eid] = c;
-            let ug_old = uf.find(u);
-            let ud_old = lca.depth[grp_root[ug_old]];
-            let xg_old = uf.find(x);
-            let xd_old = lca.depth[grp_root[xg_old]];
-            uf.union(u, x);
+            uf.union(u, p);
             // 新たに代表になったグループに, 根に近い方の代表番号を与える
-            if uf.find(u) == u_old {
-                grp_root[] = grp_root[];
-                depth_u = lca.depth[];
-            } else {
-            }
+            // 根に近い方は loop の条件から必ず x (p) 側
+            let rep = uf.find(p);
+            grp_root[rep] = grp_root[p];
+            depth_u = lca.depth[grp_root[rep]];
+            u = p;
         }
 
         while depth_v > depth_x {
             // FIXME:
+            let p = lca.parent[0][v];
+            if uf.equiv(v, p) { break; }
+
+            let eid = *edge_to_id.get(&(v, p)).unwrap();
+            ans[eid] = c;
+            uf.union(v, p);
+            // 新たに代表になったグループに, 根に近い方の代表番号を与える
+            // 根に近い方は loop の条件から必ず x (p) 側
+            let rep = uf.find(p);
+            grp_root[rep] = grp_root[p];
+            depth_v = lca.depth[grp_root[rep]];
+            v = p;
         }
+        // println!("ansX: {:?}\n", ans);
     }
+    println!("{:?}", lca.depth);
 
     for a in ans {
         println!("{a}");
