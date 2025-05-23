@@ -132,7 +132,6 @@ fn main() {
     // UnionFind に合わせて各グループの最も根に近い頂点を管理する
 
     let mut ans = vec![0; n - 1];
-    println!("{:?}", lca.depth);
     for (mut u, mut v, c) in uvcq {
         let x = lca.query(u, v);
         let mut depth_u = lca.depth[grp_root[uf.find(u)]];
@@ -147,39 +146,65 @@ fn main() {
 
 
         while depth_u > depth_x {
-            // FIXME:
             let p = lca.parent[0][u];
-            if uf.equiv(u, p) { break; }
 
-            let eid = *edge_to_id.get(&(u, p)).unwrap();
-            ans[eid] = c;
-            uf.union(u, p);
-            // 新たに代表になったグループに, 根に近い方の代表番号を与える
-            // 根に近い方は loop の条件から必ず x (p) 側
-            let rep = uf.find(p);
-            grp_root[rep] = grp_root[p];
-            depth_u = lca.depth[grp_root[rep]];
-            u = p;
+            if p == Lca::NO_PARENT {
+                break; // Cannot go further up if u is already the tree root
+            }
+
+            if uf.equiv(u, p) {
+                // Edge (u,p) is part of an already colored segment (by higher precedence query).
+                // Skip this segment: advance u to the top of this segment and continue.
+                let segment_top_node = grp_root[uf.find(u)];
+                u = segment_top_node;
+                depth_u = lca.depth[u]; // Update depth_u to the depth of the new u
+                continue;
+            } else {
+                // Edge (u,p) is available to be colored by the current color c.
+                let eid = *edge_to_id.get(&(u, p)).unwrap();
+                ans[eid] = c;
+
+                // Union (u,p) and correctly update grp_root for the new component.
+                let root_of_p_component_before_union = grp_root[uf.find(p)];
+                uf.union(u, p);
+                let new_representative = uf.find(u); 
+                grp_root[new_representative] = root_of_p_component_before_union;
+
+                depth_u = lca.depth[root_of_p_component_before_union];
+                u = p;
+            }
         }
 
         while depth_v > depth_x {
-            // FIXME:
             let p = lca.parent[0][v];
-            if uf.equiv(v, p) { break; }
 
-            let eid = *edge_to_id.get(&(v, p)).unwrap();
-            ans[eid] = c;
-            uf.union(v, p);
-            // 新たに代表になったグループに, 根に近い方の代表番号を与える
-            // 根に近い方は loop の条件から必ず x (p) 側
-            let rep = uf.find(p);
-            grp_root[rep] = grp_root[p];
-            depth_v = lca.depth[grp_root[rep]];
-            v = p;
+            if p == Lca::NO_PARENT {
+                break; // Cannot go further up if v is already the tree root
+            }
+
+            if uf.equiv(v, p) {
+                // Edge (v,p) is part of an already colored segment.
+                // Skip this segment: advance v to the top of this segment and continue.
+                let segment_top_node = grp_root[uf.find(v)];
+                v = segment_top_node;
+                depth_v = lca.depth[v]; // Update depth_v to the depth of the new v
+                continue;
+            } else {
+                // Edge (v,p) is available to be colored by the current color c.
+                let eid = *edge_to_id.get(&(v, p)).unwrap();
+                ans[eid] = c;
+
+                let root_of_p_component_before_union = grp_root[uf.find(p)];
+                uf.union(v, p);
+                let new_representative = uf.find(v);
+                grp_root[new_representative] = root_of_p_component_before_union;
+
+                depth_v = lca.depth[root_of_p_component_before_union];
+                v = p;
+            }
         }
         // println!("ansX: {:?}\n", ans);
     }
-    println!("{:?}", lca.depth);
 
     for a in ans {
         println!("{a}");
