@@ -93,7 +93,7 @@ impl Lca {
         depth: &mut Vec<usize>,
         parent: &mut Vec<Vec<usize>>,
     ) {
-        parent[0][v] = if v == 0 {Self::NO_PARENT} else {v_from};
+        parent[0][v] = if v == 0 { Self::NO_PARENT } else { v_from };
         depth[v] = depth_cur;
         for &v_nxt in &edge[v] {
             if v_nxt != v_from {
@@ -132,54 +132,65 @@ fn main() {
     // UnionFind に合わせて各グループの最も根に近い頂点を管理する
 
     let mut ans = vec![0; n - 1];
-    println!("{:?}", lca.depth);
     for (mut u, mut v, c) in uvcq {
         let x = lca.query(u, v);
         let mut depth_u = lca.depth[grp_root[uf.find(u)]];
         let mut depth_v = lca.depth[grp_root[uf.find(v)]];
-        // let depth_x = lca.depth[grp_root[uf.find(x)]];
         let depth_x = lca.depth[x];
-        // println!("lca: {x}");
-        // println!("u: {u}, depth_u: {}", depth_u);
-        // println!("v: {v}, depth_v: {}", depth_v);
-        // println!("x: {x}, depth_x: {}", depth_x);
-
-
 
         while depth_u > depth_x {
-            // FIXME:
             let p = lca.parent[0][u];
-            if uf.equiv(u, p) { break; }
+            if p == Lca::NO_PARENT {
+                break;
+            }
+
+            if uf.equiv(u, p) {
+                // 塗った区間のみをスキップする
+                // 区間飛び越えた後に塗り続ける場合があるので, break は不適
+                u = grp_root[uf.find(u)];
+                depth_u = lca.depth[u];
+                continue;
+            }
 
             let eid = *edge_to_id.get(&(u, p)).unwrap();
             ans[eid] = c;
+
+            // p 直参照だと p が訪問済みだった再にバグる
+            let grp_root_before_union = grp_root[uf.find(p)];
             uf.union(u, p);
             // 新たに代表になったグループに, 根に近い方の代表番号を与える
             // 根に近い方は loop の条件から必ず x (p) 側
             let rep = uf.find(p);
-            grp_root[rep] = grp_root[p];
-            depth_u = lca.depth[grp_root[rep]];
+            grp_root[rep] = grp_root_before_union;
+            depth_u = lca.depth[grp_root[p]];
             u = p;
         }
 
         while depth_v > depth_x {
-            // FIXME:
             let p = lca.parent[0][v];
-            if uf.equiv(v, p) { break; }
+            if p == Lca::NO_PARENT {
+                break;
+            }
+
+            if uf.equiv(v, p) {
+                v = grp_root[uf.find(v)];
+                depth_v = lca.depth[v];
+                continue;
+            }
 
             let eid = *edge_to_id.get(&(v, p)).unwrap();
             ans[eid] = c;
+
+            let grp_root_before_union = grp_root[uf.find(p)];
             uf.union(v, p);
             // 新たに代表になったグループに, 根に近い方の代表番号を与える
             // 根に近い方は loop の条件から必ず x (p) 側
             let rep = uf.find(p);
-            grp_root[rep] = grp_root[p];
-            depth_v = lca.depth[grp_root[rep]];
+            grp_root[rep] = grp_root_before_union;
+            depth_v = lca.depth[grp_root[p]];
             v = p;
         }
-        // println!("ansX: {:?}\n", ans);
     }
-    println!("{:?}", lca.depth);
 
     for a in ans {
         println!("{a}");

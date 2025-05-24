@@ -1,5 +1,4 @@
-// Dinic 法
-// 思想はなんとなくわかれども実装が重い
+// 発想が難しい
 
 use proconio::fastout;
 use proconio::input;
@@ -13,7 +12,7 @@ fn bfs(s: usize, edges: &Vec<Vec<(usize, usize, usize)>>) -> Vec<usize> {
     let n = edges.len();
     let mut ret = vec![DUMMY; n];
     let mut que = VecDeque::new();
-    let mut visited = vec![false;n];
+    let mut visited = vec![false; n];
     // (頂点, コスト)
     que.push_back((s, 0));
     while let Some((v_cur, cost_cur)) = que.pop_front() {
@@ -37,7 +36,14 @@ fn bfs(s: usize, edges: &Vec<Vec<(usize, usize, usize)>>) -> Vec<usize> {
 
 // 頂点 v から頂点 t へ, f を上限としてフローを流す
 // 戻り値は流した量
-fn dfs(v: usize, t: usize, f: usize, removed: &mut Vec<usize>, dist: &Vec<usize>, edges: &mut Vec<Vec<(usize, usize, usize)>>) -> usize {
+fn dfs(
+    v: usize,
+    t: usize,
+    f: usize,
+    removed: &mut Vec<usize>,
+    dist: &Vec<usize>,
+    edges: &mut Vec<Vec<(usize, usize, usize)>>,
+) -> usize {
     if v == t {
         return f;
     }
@@ -90,22 +96,68 @@ fn calc_max_flow(s: usize, t: usize, edges: &mut Vec<Vec<(usize, usize, usize)>>
     }
 }
 
+fn add_edge(v_in: usize, v_out: usize, edges: &mut Vec<Vec<(usize, usize, usize)>>) {
+    let l = edges[v_out].len();
+    edges[v_in].push((v_out, 1, l));
+    let l = edges[v_in].len();
+    edges[v_out].push((v_in, 0, l - 1));
+}
+
 #[fastout]
 fn main() {
     input! {
-        v: usize,
-        e: usize,
-        uvce: [(Usize1, Usize1, usize); e],
-    }
-    let mut edges = vec![vec![]; v];
-    for (u, v, c) in uvce {
-        // (終点, 容量, 逆辺のインデックス)
-        let vl = edges[v].len();
-        edges[u].push((v, c, vl));
-        let ul = edges[u].len();
-        edges[v].push((u, 0, ul - 1));
+        h: usize,
+        w: usize,
+        n: usize,
+        abcdn: [(Usize1, Usize1, Usize1, Usize1); n],
     }
 
-    let ans = calc_max_flow(0, v - 1, &mut edges);
-    println!("{ans}");
+    // 始点から行を表す頂点へ, 容量 1 の辺を張る
+    // 列を表す頂点から終点へ, 容量 1 の辺を張る
+    // 各駒について,
+    //   - 行を表す頂点から駒の入口を表す頂点へ辺を張る
+    //   - 出口を表す頂点から列を表す頂点へ辺を張る
+    //   - 入口を表す頂点から出口を表す頂点へ, 容量 1 の辺を張る
+
+    // グラフの頂点数は H+W+2N+2
+
+    // グラフの頂点と番号の対応:
+    // - 行 r はそのまま (r)
+    // - 列 c は H+c
+    // - 駒 i の入口を H+W+i
+    // - 駒 i の出口を H+W+N+i
+    // - 始点を H+W+2N
+    // - 終点を H+W+2N+1
+
+    let p_start = h + w + 2 * n;
+    let p_goal = p_start + 1;
+    let num_of_vertices = h + w + 2 * n + 2;
+    // (終点, 容量, 逆辺のインデックス)
+    let mut edges = vec![vec![]; num_of_vertices];
+    // 始点 -> 行
+    for i in 0..h {
+        add_edge(p_start, i, &mut edges);
+    }
+    // 列 -> 終点
+    for i in 0..w {
+        add_edge(h + i, p_goal, &mut edges);
+    }
+    for (i, &(a, b, c, d)) in abcdn.iter().enumerate() {
+        let token_in = h + w + i;
+        let token_out = h + w + n + i;
+        // 行 -> 駒入口
+        for j in a..=c {
+            add_edge(j, token_in, &mut edges);
+        }
+
+        // 駒出口 -> 列
+        for j in b..=d {
+            add_edge(token_out, h + j, &mut edges);
+        }
+
+        // 駒入口 -> 駒出口
+        add_edge(token_in, token_out, &mut edges);
+    }
+
+    println!("{}", calc_max_flow(p_start, p_goal, &mut edges));
 }
