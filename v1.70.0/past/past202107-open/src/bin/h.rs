@@ -17,8 +17,8 @@ fn main() {
             for k in 0..a_sum + 1 {
                 for l in 0..a_sum - j + 1 {
                     let j_l = j + l;
-                    dp[i][j_l][l] =
-                        dp[i][j_l][l].min(dp[i - 1][j][k] + ((l as f64 - k as f64).powf(2.0) + 1.0).sqrt());
+                    dp[i][j_l][l] = dp[i][j_l][l]
+                        .min(dp[i - 1][j][k] + ((l as f64 - k as f64).powf(2.0) + 1.0).sqrt());
                 }
             }
         }

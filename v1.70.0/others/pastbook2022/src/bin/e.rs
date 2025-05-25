@@ -13,7 +13,7 @@ fn bfs(s: usize, edges: &Vec<Vec<(usize, usize, usize)>>) -> Vec<usize> {
     let n = edges.len();
     let mut ret = vec![DUMMY; n];
     let mut que = VecDeque::new();
-    let mut visited = vec![false;n];
+    let mut visited = vec![false; n];
     // (頂点, コスト)
     que.push_back((s, 0));
     while let Some((v_cur, cost_cur)) = que.pop_front() {
@@ -25,7 +25,7 @@ fn bfs(s: usize, edges: &Vec<Vec<(usize, usize, usize)>>) -> Vec<usize> {
         ret[v_cur] = cost_cur;
         for &(v_next, c_next, _) in &edges[v_cur] {
             if c_next == 0 {
-                // 逆向きに貼った辺など
+                // 最初に逆向きに貼った辺や最大限流し終わった辺
                 continue;
             }
 
@@ -37,7 +37,14 @@ fn bfs(s: usize, edges: &Vec<Vec<(usize, usize, usize)>>) -> Vec<usize> {
 
 // 頂点 v から頂点 t へ, f を上限としてフローを流す
 // 戻り値は流した量
-fn dfs(v: usize, t: usize, f: usize, removed: &mut Vec<usize>, dist: &Vec<usize>, edges: &mut Vec<Vec<(usize, usize, usize)>>) -> usize {
+fn dfs(
+    v: usize,
+    t: usize,
+    f: usize,
+    removed: &mut Vec<usize>,
+    dist: &Vec<usize>,
+    edges: &mut Vec<Vec<(usize, usize, usize)>>,
+) -> usize {
     if v == t {
         return f;
     }
@@ -46,6 +53,7 @@ fn dfs(v: usize, t: usize, f: usize, removed: &mut Vec<usize>, dist: &Vec<usize>
         // removed[v] は加算されるので, 先頭側の接続辺から順に処理するの意
         let (v_next, capacity, rev) = edges[v][removed[v]];
         // 辺の容量が残っており, 最短経路上にある辺にフローを流す
+        // 最短？増加路としか判定していないが, 制約上必ず最短になるはず
         if capacity > 0 && dist[v_next] != DUMMY && dist[v] < dist[v_next] {
             let flow = dfs(v_next, t, f.min(capacity), removed, dist, edges);
 

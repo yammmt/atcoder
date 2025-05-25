@@ -88,7 +88,7 @@ impl Lca {
         depth: &mut Vec<usize>,
         parent: &mut Vec<Vec<usize>>,
     ) {
-        parent[0][v] = if v == 0 {Self::NO_PARENT} else {v_from};
+        parent[0][v] = if v == 0 { Self::NO_PARENT } else { v_from };
         depth[v] = depth_cur;
         for &v_nxt in &edge[v] {
             if v_nxt != v_from {
