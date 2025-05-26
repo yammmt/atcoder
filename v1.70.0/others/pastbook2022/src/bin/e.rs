@@ -8,8 +8,15 @@ use std::collections::VecDeque;
 
 const DUMMY: usize = usize::MAX / 4;
 
+#[derive(Clone, Debug)]
+struct Edge {
+    to: usize,
+    capacity: usize,
+    rev: usize,
+}
+
 // 始点 s から各頂点への最短距離を返す
-fn bfs(s: usize, edges: &Vec<Vec<(usize, usize, usize)>>) -> Vec<usize> {
+fn bfs(s: usize, edges: &Vec<Vec<Edge>>) -> Vec<usize> {
     let n = edges.len();
     let mut ret = vec![DUMMY; n];
     let mut que = VecDeque::new();
@@ -23,7 +30,9 @@ fn bfs(s: usize, edges: &Vec<Vec<(usize, usize, usize)>>) -> Vec<usize> {
 
         visited[v_cur] = true;
         ret[v_cur] = cost_cur;
-        for &(v_next, c_next, _) in &edges[v_cur] {
+        for e in &edges[v_cur] {
+            let v_next = e.to;
+            let c_next = e.capacity;
             if c_next == 0 {
                 // 最初に逆向きに貼った辺や最大限流し終わった辺
                 continue;
@@ -43,7 +52,7 @@ fn dfs(
     f: usize,
     removed: &mut Vec<usize>,
     dist: &Vec<usize>,
-    edges: &mut Vec<Vec<(usize, usize, usize)>>,
+    edges: &mut Vec<Vec<Edge>>,
 ) -> usize {
     if v == t {
         return f;
@@ -51,16 +60,18 @@ fn dfs(
 
     while removed[v] < edges[v].len() {
         // removed[v] は加算されるので, 先頭側の接続辺から順に処理するの意
-        let (v_next, capacity, rev) = edges[v][removed[v]];
+        let v_next = edges[v][removed[v]].to;
+        let capacity = edges[v][removed[v]].capacity;
+        let rev = edges[v][removed[v]].rev;
         // 辺の容量が残っており, 最短経路上にある辺にフローを流す
         // 最短？増加路としか判定していないが, 制約上必ず最短になるはず
         if capacity > 0 && dist[v_next] != DUMMY && dist[v] < dist[v_next] {
             let flow = dfs(v_next, t, f.min(capacity), removed, dist, edges);
 
             if flow > 0 {
-                edges[v][removed[v]].1 -= flow;
+                edges[v][removed[v]].capacity -= flow;
 
-                edges[v_next][rev].1 += flow;
+                edges[v_next][rev].capacity += flow;
                 return flow;
             }
         }
@@ -73,7 +84,7 @@ fn dfs(
 }
 
 // 頂点 s から頂点 t へ流せるフローの最大値を計算する
-fn calc_max_flow(s: usize, t: usize, edges: &mut Vec<Vec<(usize, usize, usize)>>) -> usize {
+fn calc_max_flow(s: usize, t: usize, edges: &mut Vec<Vec<Edge>>) -> usize {
     let n = edges.len();
     let mut flow = 0;
     loop {
@@ -98,6 +109,22 @@ fn calc_max_flow(s: usize, t: usize, edges: &mut Vec<Vec<(usize, usize, usize)>>
     }
 }
 
+fn add_edge(v_in: usize, v_out: usize, capacity: usize, edges: &mut Vec<Vec<Edge>>) {
+    // edges: (終点, 容量, 費用, 逆辺のインデックス)
+    let l = edges[v_out].len();
+    edges[v_in].push(Edge {
+        to: v_out,
+        capacity,
+        rev: l,
+    });
+    let l = edges[v_in].len();
+    edges[v_out].push(Edge {
+        to: v_in,
+        capacity: 0,
+        rev: l - 1,
+    });
+}
+
 #[fastout]
 fn main() {
     input! {
@@ -107,11 +134,7 @@ fn main() {
     }
     let mut edges = vec![vec![]; v];
     for (u, v, c) in uvce {
-        // (終点, 容量, 逆辺のインデックス)
-        let vl = edges[v].len();
-        edges[u].push((v, c, vl));
-        let ul = edges[u].len();
-        edges[v].push((u, 0, ul - 1));
+        add_edge(u, v, c, &mut edges);
     }
 
     let ans = calc_max_flow(0, v - 1, &mut edges);
