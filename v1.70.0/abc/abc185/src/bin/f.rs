@@ -1,7 +1,6 @@
 use proconio::fastout;
 use proconio::input;
-
-const INF: usize = usize::MAX / 2;
+use proconio::marker::Usize1;
 
 #[derive(Debug)]
 struct SegTree<T, F>
@@ -30,7 +29,13 @@ where
         }
         let node = vec![identity_e.clone(); 2 * size];
 
-        SegTree { n, size, node, identity_e, combine_f }
+        SegTree {
+            n,
+            size,
+            node,
+            identity_e,
+            combine_f,
+        }
     }
 
     /// 配列の各要素を登録する
@@ -39,8 +44,6 @@ where
         for (i, &ref a) in array.iter().enumerate() {
             self.node[i + self.size] = a.clone();
         }
-        // 0 はダミーノードだから回さなくてよい
-        // ノード i の左を 2i, 右を 2i+1 で表すために好都合
         for i in (1..self.size).rev() {
             // {左,右} の子
             self.node[i] = (self.combine_f)(&self.node[i << 1 | 0], &self.node[i << 1 | 1]);
@@ -84,23 +87,20 @@ fn main() {
     input! {
         n: usize,
         q: usize,
-        an: [usize; n],
-        txyq: [(usize, usize, usize); q],
+        mut an: [usize; n],
+        txyq: [(usize, Usize1, usize); q],
     }
 
-    // 対応する区間の最小値を管理する
-    // 葉の数は N 異常となる最小の 2 べき数
-
-    // (n: usize, identity_e: T, combine_f: F)
-    let mut st = SegTree::new(n, INF, |&a, &b| { a.min(b) });
+    // n, 単位元, 合成関数
+    let mut st = SegTree::new(n, 0, |a, b| a ^ b);
     st.build(&an);
 
     for (t, x, y) in txyq {
+        // 区間が両端とも閉で与えられるので注意
         if t == 1 {
-            // a_x を y で置き換える
-            st.update(x, y);
+            an[x] ^= y;
+            st.update(x, an[x]);
         } else {
-            // min (a_x, ..., a_y-1) を出力する
             println!("{}", st.fold(x, y));
         }
     }
