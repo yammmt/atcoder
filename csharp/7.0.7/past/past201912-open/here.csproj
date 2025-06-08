@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <!-- 実行したいファイルだけ指定 -->
-    <Compile Include="abc086c.cs" />
+    <Compile Include="g.cs" />
   </ItemGroup>
 
 </Project>
