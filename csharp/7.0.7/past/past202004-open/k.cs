@@ -6,6 +6,5 @@ class Program
 {
     static void Main(string[] args)
     {
-        // UF 実装重いので後
     }
 }
