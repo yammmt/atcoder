@@ -18,6 +18,7 @@ where
     combine_f: F,
 }
 
+#[allow(dead_code)]
 impl<T, F> SegTree<T, F>
 where
     T: Clone,
@@ -30,20 +31,26 @@ where
         }
         let node = vec![identity_e.clone(); 2 * size];
 
-        SegTree { n, size, node, identity_e, combine_f }
+        SegTree {
+            n,
+            size,
+            node,
+            identity_e,
+            combine_f,
+        }
     }
 
     /// 配列の各要素を登録する
     fn build(&mut self, array: &[T]) {
         assert_eq!(array.len(), self.n);
-        for (i, &ref a) in array.iter().enumerate() {
+        for (i, a) in array.iter().enumerate() {
             self.node[i + self.size] = a.clone();
         }
         // 0 はダミーノードだから回さなくてよい
         // ノード i の左を 2i, 右を 2i+1 で表すために好都合
         for i in (1..self.size).rev() {
             // {左,右} の子
-            self.node[i] = (self.combine_f)(&self.node[i << 1 | 0], &self.node[i << 1 | 1]);
+            self.node[i] = (self.combine_f)(&self.node[i << 1], &self.node[i << 1 | 1]);
         }
     }
 
@@ -53,7 +60,7 @@ where
         self.node[i] = value;
         while i > 1 {
             i >>= 1;
-            self.node[i] = (self.combine_f)(&self.node[i << 1 | 0], &self.node[i << 1 | 1]);
+            self.node[i] = (self.combine_f)(&self.node[i << 1], &self.node[i << 1 | 1]);
         }
     }
 
@@ -92,7 +99,7 @@ fn main() {
     // 葉の数は N 異常となる最小の 2 べき数
 
     // (n: usize, identity_e: T, combine_f: F)
-    let mut st = SegTree::new(n, INF, |&a, &b| { a.min(b) });
+    let mut st = SegTree::new(n, INF, |&a, &b| a.min(b));
     st.build(&an);
 
     for (t, x, y) in txyq {

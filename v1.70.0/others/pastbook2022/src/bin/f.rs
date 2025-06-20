@@ -78,7 +78,7 @@ fn calc_min_cost_flow(s: usize, t: usize, mut f: isize, edges: &mut Vec<Vec<Edge
         v = t;
         while v != s {
             edges[pv[v]][pe[v]].capacity -= flow;
-            let rev = edges[pv[v]][pe[v]].rev as usize;
+            let rev = edges[pv[v]][pe[v]].rev;
             edges[v][rev].capacity += flow;
             v = pv[v];
         }
