@@ -53,10 +53,10 @@ fn main() {
 
             imos[caterpillar_l] += 1;
 
-            while caterpillar_r + 1 <= n && sn[caterpillar_r + 1] - sn[i] <= l {
+            while caterpillar_r < n && sn[caterpillar_r + 1] - sn[i] <= l {
                 caterpillar_r += 1;
             }
-            if caterpillar_r + 1 <= n {
+            if caterpillar_r < n {
                 imos[caterpillar_r + 1] -= 1;
             }
         }
