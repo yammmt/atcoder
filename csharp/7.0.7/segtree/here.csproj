@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <!-- 実行したいファイルだけ指定 -->
-    <Compile Include="pastbook2022_g.cs" />
+    <Compile Include="abc185_f.cs" />
   </ItemGroup>
 
 </Project>
