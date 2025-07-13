@@ -33,10 +33,7 @@ class Program
                     dp[i + 1, j, 0] = Math.Max(dp[i + 1, j, 0], dp[i, j, 1] + an[i]);
 
                 // 宿題をする
-                if (j == m)
-                    continue;
-
-                if (dp[i, j, 0] != UNVISITED)
+                if (j != m && dp[i, j, 0] != UNVISITED)
                     dp[i + 1, j + 1, 1] = Math.Max(dp[i + 1, j + 1, 1], dp[i, j, 0]);
             }
         }
