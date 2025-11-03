@@ -35,33 +35,23 @@ class Program
         foreach (int c in ck)
             isC[c] = true;
 
-        // (高さ, idx)
-        var chik = new List<(int, int)>();
-        foreach (int c in ck)
-            chik.Add((hn[c], c));
-        chik.Sort();
-        chik.Reverse();
-
         var ans = new int[n];
         Array.Fill(ans, UNVISITED);
 
         // c を始点に, 標高低い順に辺を辿る
-        // 避難所は高い順に始点にする,
-        // さもなくば全点が避難所かつ位置列に繋がれると TLE
-        foreach (var (_, c) in chik)
-        {
-            // (idx, costSum)
-            var que = new Queue<(int, int)>();
+        // 多始点 BFS とやら
+        // (idx, costSum)
+        var que = new Queue<(int, int)>();
+        foreach (var c in ck)
             que.Enqueue((c, 0));
-            while (que.TryDequeue(out (int idx, int cost) cur))
-            {
-                if (cur.cost >= ans[cur.idx])
-                    continue;
+        while (que.TryDequeue(out (int idx, int cost) cur))
+        {
+            if (ans[cur.idx] != UNVISITED)
+                continue;
 
-                ans[cur.idx] = cur.cost;
-                foreach (var next in edges[cur.idx])
-                    que.Enqueue((next, cur.cost + 1));
-            }
+            ans[cur.idx] = cur.cost;
+            foreach (var vNext in edges[cur.idx])
+                que.Enqueue((vNext, cur.cost + 1));
         }
 
         foreach (int a in ans)
