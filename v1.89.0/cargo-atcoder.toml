@@ -1,0 +1,66 @@
+[atcoder]
+submit_via_binary = false # submit via binary by default
+use_cross = false         # use `cross` instead of `cargo` when generating binaries
+binary_column = 80        # maximum column number of generated binary (0 for no wrapping)
+update_interval = 1000    # interval time of fetching result (ms)
+strip_path = "strip"      # specify `strip` command path. NOTE: if you use macOS, you have to install GNU strip and specify its path here.
+
+[profile]
+# target to use to generate binary
+target = "x86_64-unknown-linux-musl"
+
+[profile.release]
+lto = true
+panic = 'abort'
+
+# dependencies added to new project
+[dependencies]
+ac-library-rs = "=0.2.0"
+itertools = "=0.14.0"
+ordered-float = "=5.0.0"
+petgraph = "=0.8.2"
+permutohedron = "=0.2.4"
+proconio = { version = "=0.5.0", features = ["derive"] }
+rand = { version = "=0.9.2", features = ["small_rng"] }
+superslice = "=1.0.0"
+
+[project]
+# to create `rust-toolchain` file, uncomment this line.
+# rustc_version = "1.15.1"
+
+# source code template
+template = """
+// use ac_library::modint::ModInt1000000007 as Mint;
+// use ac_library::modint::ModInt998244353 as Mint;
+// use ac_library::SccGraph;
+// use itertools::Itertools;
+// use ordered_float::NotNan;
+// use permutohedron::heap_recursive;
+// use petgraph::unionfind::UnionFind;
+use proconio::fastout;
+use proconio::input;
+// use proconio::marker::Bytes;
+// use proconio::marker::Chars;
+// use proconio::marker::Usize1;
+// use rand::rngs::SmallRng;
+// use rand::{Rng, SeedableRng};
+// use std::cmp::Ordering;
+// use std::cmp::Reverse;
+// use std::collections::BinaryHeap;
+// use std::collections::BTreeSet;
+// use std::collections::HashSet;
+// use std::collections::HashMap;
+// use std::collections::VecDeque;
+// use superslice::Ext;
+
+// const DUMMY: usize = usize::MAX / 4;
+// const MOD: usize = 998_244_353;
+// const MOD: usize = 1_000_000_007;
+
+#[fastout]
+fn main() {
+    input! {
+    }
+}
+"""
+
