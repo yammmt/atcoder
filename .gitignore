@@ -405,3 +405,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+### Rust source directory
+
+!**/src/bin
