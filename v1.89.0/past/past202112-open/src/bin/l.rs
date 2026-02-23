@@ -1,31 +1,59 @@
-// use ac_library::modint::ModInt1000000007 as Mint;
-// use ac_library::modint::ModInt998244353 as Mint;
-// use ac_library::SccGraph;
-// use itertools::Itertools;
-// use ordered_float::NotNan;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Bytes;
-// use proconio::marker::Chars;
-// use proconio::marker::Usize1;
-// use rand::rngs::SmallRng;
-// use rand::{Rng, SeedableRng};
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-// use superslice::Ext;
 
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
+const INF: isize = isize::MAX / 2;
+
+fn upper_bound(a: isize, dp: &[isize]) -> usize {
+    let mut fail = -1;
+    let mut pass = dp.len() as isize;
+    while pass - fail > 1 {
+        let mid = ((pass + fail) / 2) as usize;
+        if dp[mid] > a {
+            pass = mid as isize;
+        } else {
+            fail = mid as isize;
+        }
+    }
+
+    pass as usize
+}
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        p: usize,
+        mut an: [isize; n],
+    }
+    an.reverse();
+    for i in 0..n {
+        an[i] -= i as isize;
+    }
+
+    // 最長増加部分列, LIS
+
+    let mut dp = vec![INF; n + 1];
+    for &a in &an {
+        if !(a >= 0 && a <= (p as isize - n as isize + 1)) {
+            // 必ず置き換えなくてはならないため, DP しない.
+            // 右端の値について a+n-1 <= p <=> a <= p-n+1
+            //   右側に n-1 個並べる領域が必要
+            // LIS は置き換えなくて良い部分列の扱い
+            continue;
+        }
+
+        let i = upper_bound(a, &dp);
+        dp[i] = a;
+    }
+    // println!("{dp:?}");
+
+    for i in (0..n + 1).rev() {
+        if dp[i] != INF {
+            println!("{}", n - i - 1);
+            return;
+        }
+    }
+
+    // 全要素が点数範囲外だとここを通る
+    println!("{n}");
 }
