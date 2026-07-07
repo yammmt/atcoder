@@ -1,31 +1,36 @@
-// use ac_library::modint::ModInt1000000007 as Mint;
-// use ac_library::modint::ModInt998244353 as Mint;
-// use ac_library::SccGraph;
-// use itertools::Itertools;
-// use ordered_float::NotNan;
-// use permutohedron::heap_recursive;
-// use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-// use proconio::marker::Bytes;
-// use proconio::marker::Chars;
-// use proconio::marker::Usize1;
-// use rand::rngs::SmallRng;
-// use rand::{Rng, SeedableRng};
-// use std::cmp::Ordering;
-// use std::cmp::Reverse;
-// use std::collections::BinaryHeap;
-// use std::collections::BTreeSet;
-// use std::collections::HashSet;
-// use std::collections::HashMap;
-// use std::collections::VecDeque;
-// use superslice::Ext;
-
-// const DUMMY: usize = usize::MAX / 4;
-// const MOD: usize = 998_244_353;
-// const MOD: usize = 1_000_000_007;
 
 #[fastout]
 fn main() {
-    input! {}
+    input! {
+        n: usize,
+        m: usize,
+        an: [usize; n],
+        bm: [usize; m],
+    }
+
+    let upper_bound = |b| {
+        let mut pass = 0;
+        let mut fail = n;
+        while fail - pass > 1 {
+            let mid = (pass + fail) / 2;
+            if an[mid] <= b {
+                pass = mid;
+            } else {
+                fail = mid;
+            }
+        }
+        pass as isize
+    };
+
+    let mut ans = 0;
+    let mut pos_last = upper_bound(bm[0]);
+    for &b in bm.iter().skip(1) {
+        let pos_cur = upper_bound(b);
+        ans += (pos_cur - pos_last).unsigned_abs();
+        pos_last = pos_cur;
+    }
+
+    println!("{ans}");
 }
