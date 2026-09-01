@@ -58,7 +58,7 @@ fn main() {
                 shortest_paths_from_1[a] as f64
                     + (sq.floor() - 1.0) * t
                     + shortest_paths_from_n[a] as f64 / sq.floor(),
-                );
+            );
         }
         if sq.ceil() > 1.0 {
             ans = ans.min(
